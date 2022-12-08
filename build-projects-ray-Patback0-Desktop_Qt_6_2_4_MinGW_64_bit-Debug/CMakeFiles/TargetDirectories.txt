@@ -1,0 +1,15 @@
+C:/Users/Patback/Desktop/CS1230 Files/GraphicsFinalProject/build-projects-ray-Patback0-Desktop_Qt_6_2_4_MinGW_64_bit-Debug/CMakeFiles/projects_ray.dir
+C:/Users/Patback/Desktop/CS1230 Files/GraphicsFinalProject/build-projects-ray-Patback0-Desktop_Qt_6_2_4_MinGW_64_bit-Debug/CMakeFiles/edit_cache.dir
+C:/Users/Patback/Desktop/CS1230 Files/GraphicsFinalProject/build-projects-ray-Patback0-Desktop_Qt_6_2_4_MinGW_64_bit-Debug/CMakeFiles/rebuild_cache.dir
+C:/Users/Patback/Desktop/CS1230 Files/GraphicsFinalProject/build-projects-ray-Patback0-Desktop_Qt_6_2_4_MinGW_64_bit-Debug/CMakeFiles/list_install_components.dir
+C:/Users/Patback/Desktop/CS1230 Files/GraphicsFinalProject/build-projects-ray-Patback0-Desktop_Qt_6_2_4_MinGW_64_bit-Debug/CMakeFiles/install.dir
+C:/Users/Patback/Desktop/CS1230 Files/GraphicsFinalProject/build-projects-ray-Patback0-Desktop_Qt_6_2_4_MinGW_64_bit-Debug/CMakeFiles/install/local.dir
+C:/Users/Patback/Desktop/CS1230 Files/GraphicsFinalProject/build-projects-ray-Patback0-Desktop_Qt_6_2_4_MinGW_64_bit-Debug/CMakeFiles/install/strip.dir
+C:/Users/Patback/Desktop/CS1230 Files/GraphicsFinalProject/build-projects-ray-Patback0-Desktop_Qt_6_2_4_MinGW_64_bit-Debug/CMakeFiles/projects_ray_autogen_timestamp_deps.dir
+C:/Users/Patback/Desktop/CS1230 Files/GraphicsFinalProject/build-projects-ray-Patback0-Desktop_Qt_6_2_4_MinGW_64_bit-Debug/CMakeFiles/projects_ray_autogen.dir
+C:/Users/Patback/Desktop/CS1230 Files/GraphicsFinalProject/build-projects-ray-Patback0-Desktop_Qt_6_2_4_MinGW_64_bit-Debug/glm/CMakeFiles/edit_cache.dir
+C:/Users/Patback/Desktop/CS1230 Files/GraphicsFinalProject/build-projects-ray-Patback0-Desktop_Qt_6_2_4_MinGW_64_bit-Debug/glm/CMakeFiles/rebuild_cache.dir
+C:/Users/Patback/Desktop/CS1230 Files/GraphicsFinalProject/build-projects-ray-Patback0-Desktop_Qt_6_2_4_MinGW_64_bit-Debug/glm/CMakeFiles/list_install_components.dir
+C:/Users/Patback/Desktop/CS1230 Files/GraphicsFinalProject/build-projects-ray-Patback0-Desktop_Qt_6_2_4_MinGW_64_bit-Debug/glm/CMakeFiles/install.dir
+C:/Users/Patback/Desktop/CS1230 Files/GraphicsFinalProject/build-projects-ray-Patback0-Desktop_Qt_6_2_4_MinGW_64_bit-Debug/glm/CMakeFiles/install/local.dir
+C:/Users/Patback/Desktop/CS1230 Files/GraphicsFinalProject/build-projects-ray-Patback0-Desktop_Qt_6_2_4_MinGW_64_bit-Debug/glm/CMakeFiles/install/strip.dir

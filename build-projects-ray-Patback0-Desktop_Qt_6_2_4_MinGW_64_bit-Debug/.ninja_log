@@ -1,0 +1,15 @@
+# ninja log v5
+4	398	6922278485654406	projects_ray_autogen/timestamp	8b0da4ab0a89be4c
+4	398	6922278485654406	projects_ray_autogen/mocs_compilation.cpp	8b0da4ab0a89be4c
+4	398	6922278485654406	C:/Users/Patback/Desktop/CS1230 Files/GraphicsFinalProject/build-projects-ray-Patback0-Desktop_Qt_6_2_4_MinGW_64_bit-Debug/projects_ray_autogen/timestamp	8b0da4ab0a89be4c
+4	398	6922278485654406	C:/Users/Patback/Desktop/CS1230 Files/GraphicsFinalProject/build-projects-ray-Patback0-Desktop_Qt_6_2_4_MinGW_64_bit-Debug/projects_ray_autogen/mocs_compilation.cpp	8b0da4ab0a89be4c
+401	845	6922278491434827	CMakeFiles/projects_ray.dir/projects_ray_autogen/mocs_compilation.cpp.obj	a881bb9accd31c9a
+441	4601	6922278528988085	CMakeFiles/projects_ray.dir/src/camera/camera.cpp.obj	d684e6b2b68f474c
+462	5159	6922278534598857	CMakeFiles/projects_ray.dir/src/raytracer/raytracescene.cpp.obj	f521c00ea0481969
+467	5247	6922278535425229	CMakeFiles/projects_ray.dir/src/raytracer/ray.cpp.obj	56c8ce71cc28a4ce
+448	7254	6922278555666137	CMakeFiles/projects_ray.dir/src/raytracer/textures.cpp.obj	1ff8e30b2581e9fb
+479	7495	6922278558075136	CMakeFiles/projects_ray.dir/src/utils/sceneparser.cpp.obj	470982b4ae10008f
+420	7796	6922278560785281	CMakeFiles/projects_ray.dir/src/raytracer/raytracer.cpp.obj	42656b8f6cdcf40d
+474	10269	6922278585733892	CMakeFiles/projects_ray.dir/src/utils/scenefilereader.cpp.obj	e7078cadedb7baae
+410	12844	6922278611549676	CMakeFiles/projects_ray.dir/src/main.cpp.obj	4934a6a9c83f5656
+12847	14483	6922278627841557	projects_ray.exe	1f98d87c7e6b0867
