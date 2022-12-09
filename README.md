@@ -1,58 +1,62 @@
-# Project 4: Illuminate =
+# Projects 5 & 6: Lights, Camera & Action!
 
-Design Choices: 
-- Textures class was added. Serves to house all texture mapping-related
-code, as well as relevant helper functions.
+All project handouts can be found [here](https://cs1230.graphics/projects).
 
-- I used continue; to skip to other lights when looping through lights
-  in my phong() function. Not something I would normally do, but it 
-  was the most effective way to break out of a light once I knew it was
-  not going to contribute (shadow, outside of spot light penumbra)
-
-- I used a negative epsilon value and a small "pull-up" value to make my
-reflection and shadows work. To elaborate:
-    -> A negative epsilon is applied to my intersection point (any time I do recursive raytracing).
-       However, I only use t-values when checking for intersections above a very small amount.
-       Ie. Epsilon: -0.005, pull-up value tV > 0.006
-    -> This worked very well for me, and made my debugging process easier, so I kept it.
-
-Known Bugs:
-- Not to my knowledge!
-
-Known Bugs from Intersect:
-- not a bug, but I still recalculate my ctm for every intersection.
-Not a good move on my part, but I ran out of time to optimize it.
-
-- Also, I was penalized for inefficient run-time (or something to that effect), previously.
-When running on release mode, my code is quite fast, completing basic one object scenes in less than 10 seconds
-and scene such as shadow_test and texture_uv in under 30 seconds. I did nothing tangible to optimize my code
-from Intersect, but I was told (in gradescope comments) that my code ran for 510 seconds, which was very confusing. Not sure about what
-might have happened or if we are tested on the take_forever models. It is probably my misunderstanding, but thought
-it was worth mentioning.
-
-Extra credit: none.
-      
-
-
-
-# Project 3: Intersect
-
-Welcome to Project 3! The handout for the project is located [here](https://browncsci1230.github.io/projects/ray/1).
+# Project 6: README!
+DEFAULT FBO - set to 2 (only 1 framebuffer is used)
 
 Design Choices:
-- Ray Class representing the ray was added. Mainly serves to
-define a ray in object space and calculate t-values using
-implicit functions.
+- Different kinds of lights are handled by the default.frag
+file by assigning the lights[0] position in the
+uniform variable sent it as the enum
+corresponding to the different light types. In the GPU,
+an if-statement handles the light types by checking this.
 
-- Phong Illumination is done in raytracer.cpp
+- A scalar of PI/256 is used to regulate how much mouse
+movement rotates the camera's look vector.
 
-- Camera has member variables for look, up, (camera) pos
- to make its calculation of the view matrix less cluttered.
+- (1) Framebuffer is used in a very similar way as used in Lab 11
+where I paint my initial render to the color buffer attachment
+and then paint onto the screen through an "fbo_shader" program
+that I created that applies the post-processing effects.
 
-- Coding style choice: To save space, I made some if-statements
-and switch statements fit into as few lines as possible. It
-saved tons of space and made the code more readable.
+- My post-processing effects chosen were
+   - invert colors
+   - sharpening
 
-Known Bugs: None! I got them all.
+Known Bugs:
+- Since I was facing the same issues with the viewport
+from lab 11, I added the line:
+QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Floor);
 
-Extra Credit: no extra credit.
+to my main() function to fix the issue. As a result, my starting window
+is now a bit smaller than normal, but resizing the screen is
+completely functional, so it isn't too much of an issue.
+
+Extra Credit: None
+
+# Project 5 README
+Design Choices:
+- Major: no more than 4 VBO-VAO pairs are ever created.
+-> updateVBO() in realtime.cpp checks through renderdata.shapes to
+   which shapes are there and only allocates a buffer if it's
+   the first instance of that shape-primitive appearing.
+   Ex. in a scene of 15 cubes, only 1 VBO for the unit cube is made
+   and reused. In a scene with 2 cones and 3 spheres, only 2 VBOs for the unit cone and
+   unit sphere.
+   To accomplish this, I used a shapesCheck vector<int> that determines different
+   actions in updateVBO() to take depending on whether a new shape or another
+   of an already seen shape comes through.
+
+- shapes or RenderDataShapes have new fields for their n_ctm (to transform normals),
+  for the handle to their VAO and VBO handles, and for a vector of all their vertex
+  points, which is used in the paintGL() loop later.
+
+- NOTE: I was intending to place all of the shapes to be subchildren of a superclass,
+but I ran out of time to implement the switch from what I had. Instead, with the time I had, I created
+a shapesFunc() class that holds (2) often used methods that I factored out of the 
+shapes classes. I recognize that having a superclass would be adding new primitives easier.
+
+Known Bugs: None that I know of.
+
+Extra Credit: none

@@ -1,11 +1,13 @@
 #include "scenefilereader.h"
 #include "scenedata.h"
+
 #include "glm/gtc/type_ptr.hpp"
 
 #include <cassert>
 #include <cstring>
 #include <iostream>
 #include <filesystem>
+
 #include <QFile>
 
 #define ERROR_AT(e) "error at line " << e.lineNumber() << " col " << e.columnNumber() << ": "

@@ -127,7 +127,6 @@ struct SceneMaterial {
    }
 };
 
-// following is already handled in PARSER
 // Struct which contains data for a single primitive in a scene
 struct ScenePrimitive {
    PrimitiveType type;

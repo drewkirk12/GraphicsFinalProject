@@ -6,19 +6,14 @@
 #include <memory>
 #include <iostream>
 
+
 /**
- * @brief SceneParser::parse
- * @param filepath - file to read scene graph from
- * @param renderData - struct to hold all render-relevant data
- * @return boolean in-case of errors
- *
- * Parses input file to get rendering data. Uses root node
- * of file's scene graph and helper function, parseHelper
- * to construct every primitive's ctm and add them to renderData as well.
+ * @brief SceneParser::parse - code from Lab05 that parses a given
+ * xml file to be rendered. Deposits all information into renderData struct
  */
 bool SceneParser::parse(std::string filepath, RenderData &renderData) {
     ScenefileReader fileReader = ScenefileReader(filepath);
-    bool success = fileReader.readXML(); // function reads input filepath
+    bool success = fileReader.readXML();
     if (!success) {
         return false;
     }
@@ -80,6 +75,12 @@ void SceneParser::parseHelper(RenderData &renderData,
         RenderShapeData render;
         render.primitive = *prim;
         render.ctm = ctm;
+
+        glm::mat4 upperCTM = glm::mat3(ctm);
+        upperCTM = glm::transpose(upperCTM);
+        upperCTM = inverse(upperCTM);
+        render.normCTM = upperCTM; // ctm needed for normals calculated here
+
         renderData.shapes.push_back(render);
     }
     // recurring on children, if any
@@ -89,5 +90,3 @@ void SceneParser::parseHelper(RenderData &renderData,
     }
 
 }
-
-

@@ -1,17 +1,19 @@
 #pragma once
 
 #include "scenedata.h"
-#include "utils/rgba.h"
 #include <vector>
 #include <string>
+#include <GL/glew.h>
 
 // Struct which contains data for a single primitive, to be used for rendering
 struct RenderShapeData {
     ScenePrimitive primitive;
     glm::mat4 ctm; // the cumulative transformation matrix
-    std::vector<RGBA> texture;
-    int textureWidth;
-    int textureHeight;
+    // I added these fields to hold the vao/vbo handle for each shape
+    glm::mat4 normCTM;
+    GLuint shape_vao;
+    GLuint shape_vbo;
+    std::vector<float> vertData;
 };
 
 // Struct which contains all the data needed to render a scene
@@ -30,7 +32,6 @@ public:
     // @param renderData  On return, this will contain the metadata of the loaded scene.
     // @return            A boolean value indicating whether the parse was successful.
     static bool parse(std::string filepath, RenderData &renderData);
-    // my methods
     static void parseHelper(RenderData &renderData, SceneNode* root, glm::mat4 ctm);
 };
 
