@@ -237,6 +237,8 @@ void Realtime::paintGL() {
         glUniform1f(glGetUniformLocation(m_shader, "kd"), m_kd);
         glUniform1f(glGetUniformLocation(m_shader, "ks"), m_ks);
 
+        glUniform1f(glGetUniformLocation(m_shader, "fogValue"), settings.fogValue);
+
         glm::vec4 origin{0.0f,0.0f,0.0f, 1.0f};
         glm::vec4 camP = glm::inverse(m_view) * origin;
         glUniform4fv(glGetUniformLocation(m_shader, "camPos"), 1, &camP[0]);

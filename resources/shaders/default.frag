@@ -21,6 +21,8 @@ uniform int numLights;
 
 uniform vec4 camPos;
 
+uniform float fogValue;
+
 out vec4 fragColor;
 
 void main() {
@@ -100,6 +102,24 @@ void main() {
         illumination[1] += inPenum * fatt * ks * cSpecular[1] * dot2 * color[2];
         illumination[2] += inPenum* fatt * ks * cSpecular[2] * dot2 * color[3];
     }
+    float cameraToPointLen = distance(vec3(camPos), wpPos);
 
-    fragColor = illumination;
+    float xStart = (camPos[0] - cos(0.9 * camPos[0]) / 0.9) * 0.01;
+    float xEnd = (wpPos[0] - cos(0.9 * wpPos[0]) / 0.9) * 0.01;
+    float diff = (xEnd - xStart)/(camPos[0] - wpPos[0]);
+    float yStart = (camPos[1] - cos(0.9 * camPos[1]) / 0.9) * 0.01;
+    float yEnd = (wpPos[1] - cos(0.9 * wpPos[1]) / 0.9) * 0.01;
+    diff += (yEnd - yStart)/(camPos[1] - wpPos[1]);
+    float zStart = (camPos[2] - cos(0.9 * camPos[2]) / 0.9) * 0.01;
+    float zEnd = (wpPos[2] - cos(0.9 * wpPos[2]) / 0.9) * 0.01;
+    diff += (zEnd - zStart)/(camPos[0] - wpPos[0]);
+
+    float fogTotal = min((cameraToPointLen * (fogValue + diff)), 1);
+
+    vec4 fogColor = vec4(0.8f, 0.8f, 0.8f, 1);
+
+    fragColor = (illumination * (1 - fogTotal) + fogColor * (fogTotal));
 }
+
+
+
