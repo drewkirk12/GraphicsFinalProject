@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 8.0.1, 2022-12-10T16:13:02. -->
+<!-- Written by QtCreator 8.0.1, 2022-12-12T13:22:25. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -341,10 +341,9 @@
     <valuelist type="QVariantList" key="CustomOutputParsers"/>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">projects_ray</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">CMakeProjectManager.CMakeRunConfiguration.projects_ray</value>
-    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">projects_ray</value>
-    <value type="QString" key="RunConfiguration.Arguments">&quot;C:\Users\drewk\OneDrive\Desktop\Brown\Qsettings.ini&quot;</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">projects_realtime</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">CMakeProjectManager.CMakeRunConfiguration.projects_realtime</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">projects_realtime</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
     <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
