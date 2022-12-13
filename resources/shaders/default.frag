@@ -18,7 +18,6 @@ uniform vec3 spotDir[8];
 uniform float thetaO;
 uniform float thetaI;
 uniform int numLights;
-
 uniform vec4 camPos;
 
 uniform int fogType;
@@ -63,7 +62,7 @@ void main() {
     vec3 newNorm = normalize(wpNorm);
     vec4 illumination = vec4(0.0, 0.0, 0.0, 1.0);
 
-    // ambient
+     //ambient
     illumination[0] += (ka * cAmbient[0]);
     illumination[1] += (ka * cAmbient[1]);
     illumination[2] += (ka * cAmbient[2]);

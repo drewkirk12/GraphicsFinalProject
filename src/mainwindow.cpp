@@ -29,12 +29,20 @@ void MainWindow::initialize() {
     QLabel *camera_label = new QLabel(); // Camera label
     camera_label->setText("Camera");
     camera_label->setFont(font);
-    QLabel *filters_label = new QLabel(); // Filters label
-    filters_label->setText("Filters");
-    filters_label->setFont(font);
-    QLabel *ec_label = new QLabel(); // Extra Credit label
-    ec_label->setText("Extra Credit");
-    ec_label->setFont(font);
+
+    QLabel *fog_label = new QLabel(); //  fog label
+    fog_label->setText("Fog Type");
+
+    QLabel *fog_type_label = new QLabel(); //  fog label
+    fog_type_label->setText("Fog Value");
+
+    QLabel *fog_R_label = new QLabel(); //  fog label
+    fog_R_label->setText("Fog Red");
+    QLabel *fog_G_label = new QLabel(); //  fog label
+    fog_G_label->setText("Fog Green");
+    QLabel *fog_B_label = new QLabel(); //  fog label
+    fog_B_label->setText("Fog Blue");
+
     QLabel *param1_label = new QLabel(); // Parameter 1 label
     param1_label->setText("Parameter 1:");
     QLabel *param2_label = new QLabel(); // Parameter 2 label
@@ -46,15 +54,10 @@ void MainWindow::initialize() {
 
 
 
-    // Create checkbox for per-pixel filter
-    filter1 = new QCheckBox();
-    filter1->setText(QStringLiteral("Per-Pixel Filter"));
-    filter1->setChecked(false);
-
-    // Create checkbox for kernel-based filter
-    filter2 = new QCheckBox();
-    filter2->setText(QStringLiteral("Kernel-Based Filter"));
-    filter2->setChecked(false);
+//    // Create checkbox for per-pixel filter
+//    filter1 = new QCheckBox();
+//    filter1->setText(QStringLiteral("Per-Pixel Filter"));
+//    filter1->setChecked(false);
 
     // Create file uploader for scene file
     uploadFile = new QPushButton();
@@ -140,22 +143,119 @@ void MainWindow::initialize() {
     lfar->addWidget(farBox);
     farLayout->setLayout(lfar);
 
-    // Extra Credit:
-    ec1 = new QCheckBox();
-    ec1->setText(QStringLiteral("Extra Credit 1"));
-    ec1->setChecked(false);
+    // Creates the boxes containing the sliders for fog
+    QGroupBox *fogLayout = new QGroupBox(); // horizonal slider 1 alignment
+    QHBoxLayout *f1 = new QHBoxLayout();
 
-    ec2 = new QCheckBox();
-    ec2->setText(QStringLiteral("Extra Credit 2"));
-    ec2->setChecked(false);
+    // Create slider controls to control fog
+    fogSlider = new QSlider(Qt::Orientation::Horizontal); // fog slider
+    fogSlider->setTickInterval(1);
+    fogSlider->setMinimum(1000);
+    fogSlider->setMaximum(10000);
+    fogSlider->setValue(10000);
 
-    ec3 = new QCheckBox();
-    ec3->setText(QStringLiteral("Extra Credit 3"));
-    ec3->setChecked(false);
+    fogBox = new QDoubleSpinBox();
+    fogBox->setMinimum(10.f);
+    fogBox->setMaximum(100.f);
+    fogBox->setSingleStep(0.1f);
+    fogBox->setValue(100.f);
 
-    ec4 = new QCheckBox();
-    ec4->setText(QStringLiteral("Extra Credit 4"));
-    ec4->setChecked(false);
+    // Adds the slider and number box to the fog layouts
+    f1->addWidget(fogSlider);
+    f1->addWidget(fogBox);
+    fogLayout->setLayout(f1);
+
+    QGroupBox *fogTypeLayout = new QGroupBox(); // horizonal slider 1 alignment
+    QHBoxLayout *ft1 = new QHBoxLayout();
+
+    // Create slider controls to control parameters
+    fogTypeSlider = new QSlider(Qt::Orientation::Horizontal); // Parameter 1 slider
+    fogTypeSlider->setTickInterval(1);
+    fogTypeSlider->setMinimum(0);
+    fogTypeSlider->setMaximum(2);
+    fogTypeSlider->setValue(1);
+
+    fogTypeBox = new QSpinBox();
+    fogTypeBox->setMinimum(0);
+    fogTypeBox->setMaximum(2);
+    fogTypeBox->setSingleStep(1);
+    fogTypeBox->setValue(1);
+
+    // Adds the slider and number box to the parameter layouts
+    ft1->addWidget(fogTypeSlider);
+    ft1->addWidget(fogTypeBox);
+    fogTypeLayout->setLayout(ft1);
+
+    // Creates the boxes containing the sliders for fog
+    QGroupBox *fogRLayout = new QGroupBox(); // horizonal slider 1 alignment
+    QHBoxLayout *fr = new QHBoxLayout();
+
+    // Create slider controls to control fog
+    fogRSlider = new QSlider(Qt::Orientation::Horizontal); // fog slider
+    fogRSlider->setTickInterval(1);
+    fogRSlider->setMinimum(1000);
+    fogRSlider->setMaximum(10000);
+    fogRSlider->setValue(10000);
+
+    fogRBox = new QDoubleSpinBox();
+    fogRBox->setMinimum(0.0f);
+    fogRBox->setMaximum(100.f);
+    fogRBox->setSingleStep(0.1f);
+    fogRBox->setValue(100.f);
+
+    // Adds the slider and number box to the fog layouts
+    fr->addWidget(fogRSlider);
+    fr->addWidget(fogRBox);
+    fogRLayout->setLayout(fr);
+
+    // Creates the boxes containing the sliders for fog
+    QGroupBox *fogGLayout = new QGroupBox(); // horizonal slider 1 alignment
+    QHBoxLayout *fg = new QHBoxLayout();
+
+    // Create slider controls to control fog
+    fogGSlider = new QSlider(Qt::Orientation::Horizontal); // fog slider
+    fogGSlider->setTickInterval(1);
+    fogGSlider->setMinimum(1000);
+    fogGSlider->setMaximum(10000);
+    fogGSlider->setValue(10000);
+
+    fogGBox = new QDoubleSpinBox();
+    fogGBox->setMinimum(0.0f);
+    fogGBox->setMaximum(100.f);
+    fogGBox->setSingleStep(0.1f);
+    fogGBox->setValue(100.f);
+
+    // Adds the slider and number box to the fog layouts
+    fg->addWidget(fogGSlider);
+    fg->addWidget(fogGBox);
+    fogGLayout->setLayout(fg);
+
+    // Creates the boxes containing the sliders for fog
+    QGroupBox *fogBLayout = new QGroupBox(); // horizonal slider 1 alignment
+    QHBoxLayout *fb = new QHBoxLayout();
+
+    // Create slider controls to control fog
+    fogBSlider = new QSlider(Qt::Orientation::Horizontal); // fog slider
+    fogBSlider->setTickInterval(1);
+    fogBSlider->setMinimum(1000);
+    fogBSlider->setMaximum(10000);
+    fogBSlider->setValue(10000);
+
+    fogBBox = new QDoubleSpinBox();
+    fogBBox->setMinimum(0.0f);
+    fogBBox->setMaximum(100.f);
+    fogBBox->setSingleStep(0.1f);
+    fogBBox->setValue(100.f);
+
+    // Adds the slider and number box to the fog layouts
+    fb->addWidget(fogBSlider);
+    fb->addWidget(fogBBox);
+    fogBLayout->setLayout(fb);
+
+//    // Extra Credit:
+//    ec1 = new QCheckBox();
+//    ec1->setText(QStringLiteral("Extra Credit 1"));
+//    ec1->setChecked(false);
 
     vLayout->addWidget(uploadFile);
     vLayout->addWidget(tesselation_label);
@@ -168,15 +268,23 @@ void MainWindow::initialize() {
     vLayout->addWidget(nearLayout);
     vLayout->addWidget(far_label);
     vLayout->addWidget(farLayout);
-    vLayout->addWidget(filters_label);
-    vLayout->addWidget(filter1);
-    vLayout->addWidget(filter2);
+
+    vLayout->addWidget(fog_label);
+    vLayout->addWidget(fogLayout);
+
+    vLayout->addWidget(fog_type_label);
+    vLayout->addWidget(fogTypeLayout);
+
+    vLayout->addWidget(fog_R_label);
+    vLayout->addWidget(fogRLayout);
+    vLayout->addWidget(fog_G_label);
+    vLayout->addWidget(fogGLayout);
+    vLayout->addWidget(fog_B_label);
+    vLayout->addWidget(fogBLayout);
+//    vLayout->addWidget(filter1);
     // Extra Credit:
-    vLayout->addWidget(ec_label);
-    vLayout->addWidget(ec1);
-    vLayout->addWidget(ec2);
-    vLayout->addWidget(ec3);
-    vLayout->addWidget(ec4);
+//    vLayout->addWidget(ec_label);
+
 
     connectUIElements();
 
@@ -187,6 +295,7 @@ void MainWindow::initialize() {
     // Set default values for near and far planes
     onValChangeNearBox(0.1f);
     onValChangeFarBox(10.f);
+    onValChangeFogBox(0.0f);
 }
 
 void MainWindow::finish() {
@@ -195,23 +304,22 @@ void MainWindow::finish() {
 }
 
 void MainWindow::connectUIElements() {
-    connectPerPixelFilter();
-    connectKernelBasedFilter();
     connectUploadFile();
     connectParam1();
     connectParam2();
     connectNear();
     connectFar();
-    connectExtraCredit();
+    connectFog();
+    connectFogType();
+    connectFogR();
+    connectFogG();
+    connectFogB();
 }
 
-void MainWindow::connectPerPixelFilter() {
-    connect(filter1, &QCheckBox::clicked, this, &MainWindow::onPerPixelFilter);
-}
+//void MainWindow::connectKernelBasedFilter() {
+//    connect(filter2, &QCheckBox::clicked, this, &MainWindow::onKernelBasedFilter);
+//}
 
-void MainWindow::connectKernelBasedFilter() {
-    connect(filter2, &QCheckBox::clicked, this, &MainWindow::onKernelBasedFilter);
-}
 
 void MainWindow::connectUploadFile() {
     connect(uploadFile, &QPushButton::clicked, this, &MainWindow::onUploadFile);
@@ -240,23 +348,44 @@ void MainWindow::connectFar() {
     connect(farBox, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
             this, &MainWindow::onValChangeFarBox);
 }
-
-void MainWindow::connectExtraCredit() {
-    connect(ec1, &QCheckBox::clicked, this, &MainWindow::onExtraCredit1);
-    connect(ec2, &QCheckBox::clicked, this, &MainWindow::onExtraCredit2);
-    connect(ec3, &QCheckBox::clicked, this, &MainWindow::onExtraCredit3);
-    connect(ec4, &QCheckBox::clicked, this, &MainWindow::onExtraCredit4);
+void MainWindow::connectFog() {
+    connect(fogSlider, &QSlider::valueChanged, this, &MainWindow::onValChangeFogSlider);
+    connect(fogBox, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+            this, &MainWindow::onValChangeFogBox);
+}
+void MainWindow::connectFogType() {
+    connect(fogTypeSlider, &QSlider::valueChanged, this, &MainWindow::onValChangeFogType);
+    connect(fogTypeBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            this, &MainWindow::onValChangeFogType);
+}
+void MainWindow::connectFogR() {
+    connect(fogRSlider, &QSlider::valueChanged, this, &MainWindow::onValChangeFogRSlider);
+    connect(fogRBox, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+            this, &MainWindow::onValChangeFogRBox);
+}
+void MainWindow::connectFogG() {
+    connect(fogGSlider, &QSlider::valueChanged, this, &MainWindow::onValChangeFogGSlider);
+    connect(fogGBox, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+            this, &MainWindow::onValChangeFogGBox);
+}
+void MainWindow::connectFogB() {
+    connect(fogBSlider, &QSlider::valueChanged, this, &MainWindow::onValChangeFogBSlider);
+    connect(fogBBox, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+            this, &MainWindow::onValChangeFogBBox);
 }
 
-void MainWindow::onPerPixelFilter() {
-    settings.perPixelFilter = !settings.perPixelFilter;
-    realtime->settingsChanged();
-}
 
-void MainWindow::onKernelBasedFilter() {
-    settings.kernelBasedFilter = !settings.kernelBasedFilter;
-    realtime->settingsChanged();
-}
+//void MainWindow::connectExtraCredit() {
+//    connect(ec1, &QCheckBox::clicked, this, &MainWindow::onExtraCredit1);
+//    connect(ec2, &QCheckBox::clicked, this, &MainWindow::onExtraCredit2);
+//    connect(ec3, &QCheckBox::clicked, this, &MainWindow::onExtraCredit3);
+//    connect(ec4, &QCheckBox::clicked, this, &MainWindow::onExtraCredit4);
+//}
+
+//void MainWindow::onPerPixelFilter() {
+//    settings.perPixelFilter = !settings.perPixelFilter;
+//    realtime->settingsChanged();
+//}
 
 void MainWindow::onUploadFile() {
     // Get abs path of scene file
@@ -272,7 +401,6 @@ void MainWindow::onUploadFile() {
 
     realtime->sceneChanged();
 }
-
 
 void MainWindow::onValChangeP1(int newValue) {
     p1Slider->setValue(newValue);
@@ -316,24 +444,64 @@ void MainWindow::onValChangeFarBox(double newValue) {
     realtime->settingsChanged();
 }
 
-// Extra Credit:
-
-void MainWindow::onExtraCredit1() {
-    settings.extraCredit1 = !settings.extraCredit1;
+void MainWindow::onValChangeFogSlider(int newValue) {
+    fogBox->setValue(newValue/100.f);
+    settings.fogValue = fogBox->value();
+    realtime->settingsChanged();
+}
+void MainWindow::onValChangeFogBox(double newValue) {
+    fogSlider->setValue(int(newValue*100.f));
+    //farBox->setValue(newValue);
+    settings.fogValue = fogBox->value();
     realtime->settingsChanged();
 }
 
-void MainWindow::onExtraCredit2() {
-    settings.extraCredit2 = !settings.extraCredit2;
+void MainWindow::onValChangeFogType(int newValue) {
+    fogTypeSlider->setValue(newValue);
+    fogTypeBox->setValue(newValue);
+    settings.fogType = fogTypeSlider->value();
     realtime->settingsChanged();
 }
 
-void MainWindow::onExtraCredit3() {
-    settings.extraCredit3 = !settings.extraCredit3;
+void MainWindow::onValChangeFogRSlider(int newValue) {
+    fogRBox->setValue(newValue/100.f);
+    settings.fogColor[0] = fogRBox->value();
+    realtime->settingsChanged();
+}
+void MainWindow::onValChangeFogRBox(double newValue) {
+    fogRSlider->setValue(int(newValue*100.f));
+    //farBox->setValue(newValue);
+    settings.fogColor[0] = fogRBox->value();
     realtime->settingsChanged();
 }
 
-void MainWindow::onExtraCredit4() {
-    settings.extraCredit4 = !settings.extraCredit4;
+void MainWindow::onValChangeFogGSlider(int newValue) {
+    fogGBox->setValue(newValue/100.f);
+    settings.fogColor[1] = fogGBox->value();
     realtime->settingsChanged();
 }
+void MainWindow::onValChangeFogGBox(double newValue) {
+    fogGSlider->setValue(int(newValue*100.f));
+    //farBox->setValue(newValue);
+    settings.fogColor[1] = fogGBox->value();
+    realtime->settingsChanged();
+}
+
+void MainWindow::onValChangeFogBSlider(int newValue) {
+    fogBBox->setValue(newValue/100.f);
+    settings.fogColor[2] = fogBBox->value();
+    realtime->settingsChanged();
+}
+void MainWindow::onValChangeFogBBox(double newValue) {
+    fogBSlider->setValue(int(newValue*100.f));
+    //farBox->setValue(newValue);
+    settings.fogColor[2] = fogBBox->value();
+    realtime->settingsChanged();
+}
+
+//// Extra Credit:
+
+//void MainWindow::onExtraCredit1() {
+//    settings.extraCredit1 = !settings.extraCredit1;
+//    realtime->settingsChanged();
+//}

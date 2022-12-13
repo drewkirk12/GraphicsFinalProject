@@ -22,14 +22,15 @@ private:
     void connectParam2();
     void connectNear();
     void connectFar();
-    void connectPerPixelFilter();
-    void connectKernelBasedFilter();
     void connectUploadFile();
-    void connectExtraCredit();
+    void connectFog();
+    void connectFogType();
+    void connectFogR();
+    void connectFogG();
+    void connectFogB();
 
     Realtime *realtime;
-    QCheckBox *filter1;
-    QCheckBox *filter2;
+    //QCheckBox *filter1;
     QPushButton *uploadFile;
     QSlider *p1Slider;
     QSlider *p2Slider;
@@ -40,15 +41,24 @@ private:
     QDoubleSpinBox *nearBox;
     QDoubleSpinBox *farBox;
 
+    QSlider *fogSlider;
+    QDoubleSpinBox *fogBox;
+    QSlider *fogTypeSlider;
+    QSpinBox *fogTypeBox;
+
+    QSlider *fogRSlider;
+    QSlider *fogGSlider;
+    QSlider *fogBSlider;
+    QDoubleSpinBox *fogRBox;
+    QDoubleSpinBox *fogGBox;
+    QDoubleSpinBox *fogBBox;
+
     // Extra Credit:
-    QCheckBox *ec1;
-    QCheckBox *ec2;
-    QCheckBox *ec3;
-    QCheckBox *ec4;
+    //QCheckBox *ec1;
 
 private slots:
-    void onPerPixelFilter();
-    void onKernelBasedFilter();
+    //void onPerPixelFilter();
+    //void onKernelBasedFilter();
     void onUploadFile();
     void onValChangeP1(int newValue);
     void onValChangeP2(int newValue);
@@ -56,10 +66,21 @@ private slots:
     void onValChangeFarSlider(int newValue);
     void onValChangeNearBox(double newValue);
     void onValChangeFarBox(double newValue);
+    void onValChangeFogSlider(int newValue);
+    void onValChangeFogBox(double newValue);
+    void onValChangeFogType(int newValue);
+
+    void onValChangeFogRSlider(int newValue);
+    void onValChangeFogRBox(double newValue);
+
+    void onValChangeFogGSlider(int newValue);
+    void onValChangeFogGBox(double newValue);
+
+    void onValChangeFogBSlider(int newValue);
+    void onValChangeFogBBox(double newValue);
+
+
 
     // Extra Credit:
-    void onExtraCredit1();
-    void onExtraCredit2();
-    void onExtraCredit3();
-    void onExtraCredit4();
+//    void onExtraCredit1();
 };
