@@ -9,6 +9,8 @@
 #include "utils/shaderloader.h"
 #include "shapes/sphere.h"
 
+#include "clouds/clouds.h"
+
 // ================== Project 6!
 
 /**
@@ -54,6 +56,8 @@ void Realtime::finish() {
     glDeleteTextures(1, &m_fbo_texture);
     glDeleteRenderbuffers(1, &m_fbo_renderbuffer);
     glDeleteFramebuffers(1, &m_fbo);
+
+    cloud::finalizeClouds();
 
     this->doneCurrent();
 }
@@ -114,6 +118,8 @@ void Realtime::initializeGL() {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     makeFBO();
+
+    cloud::initializeClouds();
 }
 
 /**
@@ -248,6 +254,8 @@ void Realtime::paintGL() {
     // Unbind the shader
     glUseProgram(0);
 
+    cloud::renderClouds();
+
     // painting from framebuffer back to screen applying any effects
     // triggered by m_invert_bool or m_kernel_bool
     glBindFramebuffer(GL_FRAMEBUFFER, m_defaultFBO);
@@ -311,6 +319,7 @@ void Realtime::sceneChanged() {
     m_kd = renderData.globalData.kd;
     m_ks = renderData.globalData.ks;
     updateVBO();
+    cloud::setCamera(camera);
     update(); // asks for a PaintGL() call to occur
 }
 
@@ -326,6 +335,9 @@ void Realtime::settingsChanged() {
     m_invert_bool = settings.perPixelFilter;
     m_kernel_bool = settings.kernelBasedFilter;
     updateVBO();
+
+    cloud::setFarPlane(settings.farPlane);
+    cloud::setCamera(camera);
     update();
 }
 
@@ -352,7 +364,7 @@ void Realtime::updateVBO() {
     std::vector<int> shapeCheck{1, 1, 1, 1};
     for (RenderShapeData &shape : renderData.shapes) {
 
-        boolean makeNewVBO = false; // used below to see whether VBO is needed
+        bool makeNewVBO = false; // used below to see whether VBO is needed
         RenderShapeData *firstRender; // pointer used to access prior VAO/VBOs
 
         switch (shape.primitive.type) {
@@ -518,6 +530,7 @@ void Realtime::mouseMoveEvent(QMouseEvent *event) {
         }
         m_view = camera.getViewMatrix();
         m_proj = camera.getPerspectiveMatrix();
+        cloud::setCamera(camera);
         update(); // asks for a PaintGL() call to occur
     }
 }
@@ -564,5 +577,6 @@ void Realtime::timerEvent(QTimerEvent *event) {
     }
     m_view = camera.getViewMatrix();
     m_proj = camera.getPerspectiveMatrix();
+    cloud::setCamera(camera);
     update(); // asks for a PaintGL() call to occur
 }

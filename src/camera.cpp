@@ -31,7 +31,7 @@ void Camera::cameraUpdate(RenderData &renderData, int width, int height) {
 /**
  * @brief Camera::getViewMatrix - prepare and return view matrix of camera
  */
-glm::mat4 Camera::getViewMatrix() {
+glm::mat4 Camera::getViewMatrix() const {
     glm::vec3 w = (1 / glm::length(look)) * (-1.0f * look);
     glm::vec3 v = (up - ((glm::dot(up, w) * w))) /
             glm::length(up - (glm::dot(up, w) * w));
@@ -55,7 +55,7 @@ glm::mat4 Camera::getViewMatrix() {
  * @brief Camera::getWidthAngle - calculates widthAngle using given aspectRatio
  * and given heightAngle
  */
-float Camera::getWidthAngle() {
+float Camera::getWidthAngle() const {
     float unitHeight = 2.0f * glm::tan(0.5f * heightAngle);
     float unitWidth = aspectRatio * unitHeight;
     float widthAngle = 2.0f * glm::atan(0.5f * unitWidth);
@@ -65,7 +65,7 @@ float Camera::getWidthAngle() {
 /**
  * @brief Camera::getPerspectiveMatrix - prepares and returns projection matrix
  */
-glm::mat4 Camera::getPerspectiveMatrix() {
+glm::mat4 Camera::getPerspectiveMatrix() const {
     float c = -(settings.nearPlane / settings.farPlane);
     float A = 1.0f / (1.0f + c);
     float B = -c / (1.0f + c);
