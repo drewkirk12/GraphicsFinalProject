@@ -6,6 +6,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/random.hpp>
 
+#include "params.h"
+
 namespace cloud {
 
 inline int getIndex(glm::ivec3 coord, int dimSize) {

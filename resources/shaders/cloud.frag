@@ -2,10 +2,11 @@
 
 in vec3 pos_world;
 
-uniform float layerDensity = 1.0;
-uniform int sampleDist = 20;
+uniform float layerDensity;
+uniform vec3 noiseSampleScale;
 uniform bool adjustColor = false;
 
+uniform float startHeight;
 uniform uint heightTexHeight;
 uniform sampler1D heightTex;
 uniform sampler1D heightGradTex;
@@ -24,17 +25,17 @@ void main() {
     vec3 adjPos = vec3(pos_world.x, h, pos_world.z);
 
     // Sample cloud density texture
-    vec4 noiseSample = texture(noiseTex, adjPos / sampleDist);
+    vec4 noiseSample = texture(noiseTex, adjPos / noiseSampleScale);
 
     vec3 sampleColor = noiseSample.xyz;
     float density = noiseSample.a;
 
     /// Cloud geometry
 
-    // Cut off clouds at horizon
-    density *= smoothstep(0, 2, pos_world.y);
+    // Cut off clouds below horizon
+    density *= smoothstep(startHeight, startHeight + 2, pos_world.y);
     // Add curve
-    float curve = pow(length(pos_world.xz) / 10, 2);
+    float curve = -startHeight + pow(length(pos_world.xz) / 10, 2);
     h += curve;
     // Limit clouds to a reasonable area
     density *= step(0, h) - step(heightTexHeight, h);
@@ -48,7 +49,7 @@ void main() {
     if (density < 0) discard;
 
     // Give clouds a harder edge
-    density = 0.5 * smoothstep(0, 0.1, density);
+    density = 0.7 * smoothstep(0, 0.1, density);
     // If our volumetric planes are close together, decrease
     // cloud density.
     density = 1 - pow(1 - density, layerDensity);
@@ -57,8 +58,8 @@ void main() {
     if (adjustColor) {
         // To calculate color, we want to use the gradient of
         // the noise and height textures
-        vec3 noiseGradSample = texture(noiseGradTex, adjPos / sampleDist).xyz
-                / sampleDist;
+        vec3 noiseGradSample = texture(noiseGradTex, adjPos / noiseSampleScale).xyz
+                / noiseSampleScale;
         float heightGradSample = texture(heightGradTex, h / heightTexHeight)[0]
                 / heightTexHeight;
         // Product rule

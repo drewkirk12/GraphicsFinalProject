@@ -42,6 +42,7 @@ add_executable(${PROJECT_NAME}
     src/clouds/clouds.cpp
     src/clouds/heightgrad.cpp
     src/clouds/noise.cpp
+    src/clouds/params.cpp
 
     src/mainwindow.h
     src/realtime.h

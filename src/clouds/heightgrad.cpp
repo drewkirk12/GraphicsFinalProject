@@ -4,13 +4,9 @@
 
 #include <glm/glm.hpp>
 
+#include "params.h"
+
 namespace cloud {
-
-
-float cloudFloorStart = 10;
-float cloudFloorEnd   = 11;
-float cloudCeilStart  = 30;
-float cloudCeilEnd    = 40;
 
 void computeDensities(unsigned int height, float resolution,
                       std::vector<GLfloat> &densities);
@@ -60,7 +56,7 @@ void generateHeightGradient(
 
 void computeDensities(unsigned int height, float resolution,
                       std::vector<GLfloat> &densities) {
-    densities.assign(height * resolution, 1);
+    densities.assign(height * resolution, densityScale);
 
     for (unsigned int i = 0; i < densities.size(); i++) {
         GLfloat &density = densities[i];
@@ -69,8 +65,7 @@ void computeDensities(unsigned int height, float resolution,
         density *= glm::smoothstep(cloudFloorStart, cloudFloorEnd, h)
                 - glm::smoothstep(cloudCeilStart, cloudCeilEnd, h);
         // Decrease density at high altitudes
-        density *= glm::min(1.f, 10.f / (10 + h));
-        continue;
+        // density *= glm::min(1.f, 10.f / (10 + h));
     }
 }
 

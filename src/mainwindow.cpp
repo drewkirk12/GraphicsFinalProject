@@ -216,7 +216,7 @@ void MainWindow::initialize() {
 
     // Set default values for near and far planes
     onValChangeNearBox(0.1f);
-    onValChangeFarBox(100.f);
+    onValChangeFarBox(30.f);
     onValChangeFogBox(0.0f);
 }
 

@@ -6,6 +6,7 @@
 
 #include "noise.h"
 #include "heightgrad.h"
+#include "params.h"
 
 namespace cloud {
 
@@ -19,14 +20,9 @@ int numQuads;
 
 GLuint noiseTex;
 GLuint noiseGradTex;
-int noiseSampleResolution = 64;
-
-int heightTexHeight = 50;
-float heightTexResolution = 1;
 GLuint heightTex;
 GLuint heightGradTex;
 
-float sliceDistance = 0.2;
 
 const Camera *camera;
 
@@ -193,6 +189,8 @@ void renderClouds() {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_3D, noiseGradTex);
     glUniform1i(glGetUniformLocation(cloudProgram, "noiseGradTex"), 1);
+    glUniform3fv(glGetUniformLocation(cloudProgram, "noiseSampleScale"),
+                 1, &noiseSampleScale[0]);
 
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_1D, heightTex);
@@ -200,6 +198,8 @@ void renderClouds() {
     glActiveTexture(GL_TEXTURE3);
     glBindTexture(GL_TEXTURE_1D, heightGradTex);
     glUniform1i(glGetUniformLocation(cloudProgram, "heightGradTex"), 3);
+    glUniform1f(glGetUniformLocation(cloudProgram, "startHeight"),
+                 startHeight);
     glUniform1ui(glGetUniformLocation(cloudProgram, "heightTexHeight"),
                  heightTexHeight);
 
