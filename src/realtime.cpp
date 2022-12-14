@@ -103,6 +103,82 @@ void Realtime::initializeGL() {
                 ":/resources/shaders/fbo.vert", // shader for post-processing
                 ":/resources/shaders/fbo.frag");
 
+    m_skybox_shader = ShaderLoader::createShaderProgram(
+                ":/resources/shaders/skybox.vert", // shader for skybox
+                ":/resources/shaders/skybox.frag");
+
+
+    // making the skybox vbo and vao
+
+
+    glGenBuffers(1, &m_skybox_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, m_skybox_vbo);
+    glBufferData(GL_ARRAY_BUFFER, skyboxVertices.size()*sizeof(GLfloat), skyboxVertices.data(), GL_STATIC_DRAW);
+    glGenVertexArrays(1, &m_skybox_vao);
+    glBindVertexArray(m_skybox_vao);
+
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
+
+    //reset
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    glGenTextures(1, &m_skybox_texture);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, m_skybox_texture);
+
+    QString back_filepath = QString(":/resources/skybox/back.jpg");
+    m_back = QImage(back_filepath);
+    m_back = m_back.convertToFormat(QImage::Format_RGBA8888);
+
+    QString bottom_filepath = QString(":/resources/skybox/bottom.jpg");
+    m_bottom = QImage(bottom_filepath);
+    m_bottom = m_bottom.convertToFormat(QImage::Format_RGBA8888);
+
+    QString front_filepath = QString(":/resources/skybox/front.jpg");
+    m_front = QImage(front_filepath);
+    m_front = m_front.convertToFormat(QImage::Format_RGBA8888);
+
+    QString left_filepath = QString(":/resources/skybox/left.jpg");
+    m_left = QImage(left_filepath);
+    m_left = m_left.convertToFormat(QImage::Format_RGBA8888);
+
+    QString right_filepath = QString(":/resources/skybox/right.jpg");
+    m_right = QImage(right_filepath);
+    m_right = m_right.convertToFormat(QImage::Format_RGBA8888);
+
+    QString top_filepath = QString(":/resources/skybox/top.jpg");
+    m_top = QImage(top_filepath);
+    m_top = m_top.convertToFormat(QImage::Format_RGBA8888);
+
+    std::vector<QImage> faces =
+    {
+        m_right,
+        m_left,
+        m_top,
+        m_bottom,
+        m_front,
+        m_back
+    };
+    for (unsigned int i = 0; i < faces.size(); i++) {
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                     0, GL_RGBA, faces[i].width(), faces[i].height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, faces[i].bits());
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
     // Generate and bind a VBO and a VAO for a fullscreen quad
     glGenBuffers(1, &m_fullscreen_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, m_fullscreen_vbo);
@@ -115,6 +191,7 @@ void Realtime::initializeGL() {
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), reinterpret_cast<void*>(3 * sizeof(GLfloat)));
 
+    //reset
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     makeFBO();
@@ -127,7 +204,7 @@ void Realtime::initializeGL() {
  * Taken from lab 11 - generates an FBO used to do post-processing effects.
  * For this project, they'll be inverted colors and sharpening.
  */
-void Realtime::makeFBO() {
+void Realtime::makeFBO() { // I can put my new stuff here!
     // generate texture, color attachment to paint to before applying kernel/per pixel effects
     glGenTextures(1, &m_fbo_texture);
     glActiveTexture(GL_TEXTURE0);
@@ -162,13 +239,33 @@ void Realtime::makeFBO() {
  *  as the 0th element in the lights and colors uniform vector variables.
  */
 void Realtime::paintGL() {
+
+
     // bind the fbo to paint to, first
     glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
     // set the view port to the fbo dimensions
     glViewport(0, 0, m_fbo_width, m_fbo_height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glUseProgram(m_shader); // Bind the shader
+    // painting the skybox //////////////////////////////////////////////////////////////////////////
+    glDepthMask(GL_FALSE);
+    glUseProgram(m_skybox_shader);
+    glm::mat4 view_skybox = glm::mat4(glm::mat3(m_view));
+    glUniformMatrix4fv(glGetUniformLocation(m_skybox_shader, "view"),
+                                     1, GL_FALSE, &view_skybox[0][0]);
+    glUniformMatrix4fv(glGetUniformLocation(m_skybox_shader, "projection"),
+                                     1, GL_FALSE, &m_proj[0][0]);
+    glBindVertexArray(m_skybox_vao);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, m_skybox_texture);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    // reset to default
+    glDepthMask(GL_TRUE);
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+    glUseProgram(0);
+
+    glUseProgram(m_shader); // Bind the shader //////////////////////////////////////////////////////////////////////////
     for (RenderShapeData &shape : renderData.shapes) {
         glBindVertexArray(shape.shape_vao); // bind current shape vao
 
@@ -183,9 +280,6 @@ void Realtime::paintGL() {
 
         int numLights = renderData.lights.size();
         std::string str;
-        //std::string colorStr;
-        //std::string attenStr;
-        //std::string spotStr;
         GLint loc;
         int j = 0;
         for (j = 0; j < numLights; j++) {
@@ -243,6 +337,10 @@ void Realtime::paintGL() {
         glUniform1f(glGetUniformLocation(m_shader, "kd"), m_kd);
         glUniform1f(glGetUniformLocation(m_shader, "ks"), m_ks);
 
+        glUniform1i(glGetUniformLocation(m_shader, "fogType"), settings.fogType);
+        float testFogVal = settings.fogValue;
+        glUniform1f(glGetUniformLocation(m_shader, "fogIntensity"), (settings.fogValue)/100);
+
         glm::vec4 origin{0.0f,0.0f,0.0f, 1.0f};
         glm::vec4 camP = glm::inverse(m_view) * origin;
         glUniform4fv(glGetUniformLocation(m_shader, "camPos"), 1, &camP[0]);
@@ -271,6 +369,9 @@ void Realtime::paintGL() {
 
     glBindVertexArray(m_fullscreen_vao);
     glBindTexture(GL_TEXTURE_2D, m_fbo_texture);
+
+    // this will be my intercept point, let's see where m_fbo_texture lies
+
     glDrawArrays(GL_TRIANGLES, 0, 6); // paint to fullscreen squad
     // return to default state
     glBindTexture(GL_TEXTURE_2D, 0);

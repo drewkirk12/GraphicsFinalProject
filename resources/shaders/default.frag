@@ -18,16 +18,50 @@ uniform vec3 spotDir[8];
 uniform float thetaO;
 uniform float thetaI;
 uniform int numLights;
-
 uniform vec4 camPos;
 
+uniform int fogType;
+uniform float fogIntensity;
+
 out vec4 fragColor;
+
+float fogScene(vec3 camPos, vec3 wpPos, int fogType){
+
+    //get distance from camera to intersection
+    float cameraToPointLen = distance(vec3(camPos), wpPos);
+
+    //calculate fog amount per axis
+    float xStart = (camPos[0] - cos(0.6 * camPos[0]) / 0.6) * 0.01;
+    float xEnd = (wpPos[0] - cos(0.6 * wpPos[0]) / 0.6) * 0.01;
+    float diff = (xEnd - xStart)/(camPos[0] - wpPos[0]);
+    float yStart = (camPos[1] - cos(1.2 * camPos[1]) / 1.2) * 0.01;
+    float yEnd = (wpPos[1] - cos(1.2 * wpPos[1]) / 1.2) * 0.01;
+    diff += (yEnd - yStart)/(camPos[1] - wpPos[1]);
+    float zStart = (camPos[2] - cos(0.9 * camPos[2]) / 0.9) * 0.01;
+    float zEnd = (wpPos[2] - cos(0.9 * wpPos[2]) / 0.9) * 0.01;
+    diff += (zEnd - zStart)/(camPos[0] - wpPos[0]);
+
+    //get total fog amount based on each axis and base value
+    float fogTotal = min((cameraToPointLen * (fogIntensity + diff)), 0.7);
+
+    if(fogType == 2){
+        float fogTopBound= 0.1;
+        float fogLowBound = 0.01;
+        if(wpPos[1] > fogTopBound){
+            fogTotal = 0;
+        }else if(wpPos[1] > fogLowBound){
+            float fogFalloff = (fogTopBound - wpPos[1])/(fogTopBound - fogLowBound);
+            fogTotal *= fogFalloff;
+        }
+    }
+    return fogTotal;
+}
 
 void main() {
     vec3 newNorm = normalize(wpNorm);
     vec4 illumination = vec4(0.0, 0.0, 0.0, 1.0);
 
-    // ambient
+     //ambient
     illumination[0] += (ka * cAmbient[0]);
     illumination[1] += (ka * cAmbient[1]);
     illumination[2] += (ka * cAmbient[2]);
@@ -98,8 +132,20 @@ void main() {
         // specular
         illumination[0] += inPenum * fatt * ks * cSpecular[0] * dot2 * color[1];
         illumination[1] += inPenum * fatt * ks * cSpecular[1] * dot2 * color[2];
-        illumination[2] += inPenum* fatt * ks * cSpecular[2] * dot2 * color[3];
+        illumination[2] += inPenum * fatt * ks * cSpecular[2] * dot2 * color[3];
+    }
+    if(fogType != 0){
+        float fogTotal = fogScene(vec3(camPos), wpPos, fogType);
+        vec4 fogColor = vec4(0.8, 0.8, 0.8, 1 );
+        //linerally interpolate between normal color and fog color based on fog intensity
+        fragColor = (illumination * (1 - fogTotal) + fogColor * (fogTotal));
+    }else{
+        fragColor = illumination;
     }
 
-    fragColor = illumination;
 }
+
+
+
+
+
