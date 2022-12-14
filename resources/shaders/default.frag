@@ -22,7 +22,6 @@ uniform vec4 camPos;
 
 uniform int fogType;
 uniform float fogIntensity;
-uniform vec4 fogColor;
 
 out vec4 fragColor;
 
@@ -43,7 +42,7 @@ float fogScene(vec3 camPos, vec3 wpPos, int fogType){
     diff += (zEnd - zStart)/(camPos[0] - wpPos[0]);
 
     //get total fog amount based on each axis and base value
-    float fogTotal = min((cameraToPointLen * (fogIntensity + diff)), 1);
+    float fogTotal = min((cameraToPointLen * (0.1 + diff)), 0.7);
 
     if(fogType == 2){
         float fogTopBound= 0.1;
@@ -137,6 +136,7 @@ void main() {
     }
     if(fogType != 0){
         float fogTotal = fogScene(vec3(camPos), wpPos, fogType);
+        vec4 fogColor = vec4(0.8, 0.8, 0.8, 1 );
         //linerally interpolate between normal color and fog color based on fog intensity
         fragColor = (illumination * (1 - fogTotal) + fogColor * (fogTotal));
     }else{
