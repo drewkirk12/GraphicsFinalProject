@@ -143,15 +143,15 @@ void MainWindow::initialize() {
     // Create slider controls to control fog
     fogSlider = new QSlider(Qt::Orientation::Horizontal); // fog slider
     fogSlider->setTickInterval(1);
-    fogSlider->setMinimum(1000);
-    fogSlider->setMaximum(10000);
-    fogSlider->setValue(10000);
+    fogSlider->setMinimum(0);
+    fogSlider->setMaximum(1000);
+    fogSlider->setValue(1000);
 
     fogBox = new QDoubleSpinBox();
-    fogBox->setMinimum(10.f);
-    fogBox->setMaximum(100.f);
-    fogBox->setSingleStep(0.1f);
-    fogBox->setValue(100.f);
+    fogBox->setMinimum(0.f);
+    fogBox->setMaximum(10.f);
+    fogBox->setSingleStep(0.001f);
+    fogBox->setValue(0.0f);
 
     // Adds the slider and number box to the fog layouts
     f1->addWidget(fogSlider);
