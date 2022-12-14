@@ -10,6 +10,7 @@
 #include "shapes/sphere.h"
 #include "skyboxhelpers.h"
 
+bool glIni = false;
 /// Realtime Class from Project 6, used as code base for our realtime pipeline.
 
 /**
@@ -40,10 +41,10 @@ void Realtime::finish() {
     killTimer(m_timer);
     this->makeCurrent();
     // uses global, storedRenders, which is filled in updateVBO function below
-    for (RenderShapeData &shape : storedRenders) {
-        glDeleteBuffers(1, &(shape.shape_vbo));
-        glDeleteVertexArrays(1, &(shape.shape_vbo));
-    }
+//    for (RenderShapeData &shape : storedRenders) {
+//        glDeleteBuffers(1, &(shape.shape_vbo));
+//        glDeleteVertexArrays(1, &(shape.shape_vbo));
+//    }
     // freeing up allocated resources for base program
     glDeleteProgram(m_shader);
     glDeleteProgram(m_fbo_shader);
@@ -68,6 +69,7 @@ void Realtime::finish() {
  * - Creates the shader using functions from ShaderLoader class & GLSL files
  */
 void Realtime::initializeGL() {
+    glIni = true;
     m_devicePixelRatio = this->devicePixelRatio();
 
     // preparing important member variables that will be used to build fbo
@@ -389,6 +391,9 @@ void Realtime::settingsChanged() {
 void Realtime::updateVBO() {
     makeCurrent(); // allows GL context to be updated here
     // tracks which shapes have had their "first" of their kind come through
+    if (!glIni) {
+        return;
+    }
 
     glGenBuffers(1, &m_terrain_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, m_terrain_vbo);
