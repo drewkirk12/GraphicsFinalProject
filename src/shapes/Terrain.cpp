@@ -135,19 +135,19 @@ void Terrain::makeFace() {
             yValLong = yVal + sideLength;
 
             zVal = m_heightMultiplier * getHeight((xVal + m_halfRes) / m_terrainSize, (yValLong + m_halfRes) / m_terrainSize);
-            topLeft = {xVal, yValLong, zVal};
+            topLeft = {xVal, zVal, yValLong};
 
             zVal = m_heightMultiplier * getHeight((xValLong + m_halfRes) / m_terrainSize, (yValLong + m_halfRes) / m_terrainSize);
-            topRight = {xValLong, yValLong, zVal};
+            topRight = {xValLong, zVal, yValLong};
 
             zVal = m_heightMultiplier * getHeight((xVal + m_halfRes) / m_terrainSize, (yVal + m_halfRes) / m_terrainSize);
-            bottomLeft = {xVal, yVal, zVal};
+            bottomLeft = {xVal, zVal, yVal};
 
             zVal = m_heightMultiplier * getHeight((xValLong + m_halfRes) / m_terrainSize, (yVal + m_halfRes) / m_terrainSize);
-            bottomRight = {xValLong, yVal, zVal};
+            bottomRight = {xValLong, zVal, yVal};
 
 
-            makeTile(topLeft, topRight, bottomLeft, bottomRight);
+            makeTile(topRight, topLeft, bottomRight, bottomLeft);
         }
     }
 
