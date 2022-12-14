@@ -60,8 +60,4 @@ private slots:
     void onValChangeFogBox(double newValue);
     void onValChangeFogType(int newValue);
 
-
-
-    // Extra Credit:
-//    void onExtraCredit1();
 };

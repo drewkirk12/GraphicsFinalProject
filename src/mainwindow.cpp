@@ -216,7 +216,7 @@ void MainWindow::initialize() {
 
     // Set default values for near and far planes
     onValChangeNearBox(0.1f);
-    onValChangeFarBox(10.f);
+    onValChangeFarBox(100.f);
     onValChangeFogBox(0.0f);
 }
 
@@ -350,7 +350,7 @@ void MainWindow::onValChangeFarBox(double newValue) {
 }
 
 void MainWindow::onValChangeFogSlider(int newValue) {
-    fogBox->setValue(newValue/10000.f);
+    fogBox->setValue(newValue/100.f);
     settings.fogValue = fogBox->value();
     realtime->settingsChanged();
 }
