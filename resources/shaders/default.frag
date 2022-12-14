@@ -39,7 +39,7 @@ float fogScene(vec3 camPos, vec3 wpPos, int fogType){
     diff += (yEnd - yStart)/(camPos[1] - wpPos[1]);
     float zStart = (camPos[2] - cos(0.9 * camPos[2]) / 0.9) * 0.01;
     float zEnd = (wpPos[2] - cos(0.9 * wpPos[2]) / 0.9) * 0.01;
-    diff += (zEnd - zStart)/(camPos[0] - wpPos[0]);
+    diff += (zEnd - zStart)/(camPos[2] - wpPos[2]);
 
     //get total fog amount based on each axis and base value
     float fogTotal = min((cameraToPointLen * (fogIntensity + diff)), 0.7);
