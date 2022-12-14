@@ -37,6 +37,7 @@ add_executable(${PROJECT_NAME}
     src/shapes/cube.cpp
     src/shapes/cylinder.cpp
     src/shapes/cone.cpp
+    src/shapes/Terrain.cpp
 
     src/mainwindow.h
     src/realtime.h
@@ -50,6 +51,7 @@ add_executable(${PROJECT_NAME}
     src/shapes/cube.h
     src/shapes/cylinder.h
     src/shapes/cone.h
+    src/shapes/Terrain.h
     src/shapes/shapefunctions.h
     src/skyboxhelpers.h
 )
