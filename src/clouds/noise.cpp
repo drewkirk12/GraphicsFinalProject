@@ -26,6 +26,7 @@ void addGradient(
         std::vector<glm::vec3> &gradData);
 
 void generateNoise(
+        const std::vector<unsigned int> &noiseResolutions,
         unsigned int sampleResolution,
         GLuint noiseTex, GLuint gradTex) {
     std::vector<glm::vec4> texData(sampleResolution * sampleResolution * sampleResolution);
@@ -33,10 +34,9 @@ void generateNoise(
     std::vector<glm::vec3> gradData(sampleResolution * sampleResolution * sampleResolution);
 
     // Generate and sample noise of different resolutions
-    addGradient(2, sampleResolution, texData, gradData);
-    addGradient(4, sampleResolution, texData, gradData);
-    addGradient(8, sampleResolution, texData, gradData);
-    addGradient(16, sampleResolution, texData, gradData);
+    for (unsigned int noiseResolution : noiseResolutions) {
+        addGradient(noiseResolution, sampleResolution, texData, gradData);
+    }
 
     // Pass noise texture
 

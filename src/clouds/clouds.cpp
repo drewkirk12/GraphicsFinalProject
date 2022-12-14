@@ -46,8 +46,8 @@ void initializeClouds() {
     glEnable(GL_BLEND);
 
     cloudProgram = ShaderLoader::createShaderProgram(
-                "./resources/shaders/cloud.vert",
-                "./resources/shaders/cloud.frag");
+                ":/resources/shaders/cloud.vert",
+                ":/resources/shaders/cloud.frag");
 
     glGenTextures(1, &noiseTex);
     glBindTexture(GL_TEXTURE_3D, noiseTex);
@@ -78,7 +78,9 @@ void initializeClouds() {
 
     initialized = true;
 
-    generateNoise(noiseSampleResolution, noiseTex, noiseGradTex);
+    generateNoise(cloudNoiseResolutions,
+                  noiseSampleResolution,
+                  noiseTex, noiseGradTex);
 
     generateHeightGradient(heightTexHeight,
                            heightTexResolution,

@@ -89,6 +89,8 @@ qt6_add_resources(${PROJECT_NAME} "Resources"
         resources/shaders/fbo.vert
         resources/shaders/skybox.frag
         resources/shaders/skybox.vert
+        resources/shaders/cloud.frag
+        resources/shaders/cloud.vert
         resources/skybox/sunsetback.png
         resources/skybox/sunsetbottom.png
         resources/skybox/sunsetfront.png

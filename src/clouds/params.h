@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <glm/glm.hpp>
 
 namespace cloud {
@@ -8,6 +9,7 @@ extern float sliceDistance;
 
 // Perlin noise
 
+extern std::vector<unsigned int> cloudNoiseResolutions;
 extern int noiseSampleResolution;
 
 extern float startHeight;
