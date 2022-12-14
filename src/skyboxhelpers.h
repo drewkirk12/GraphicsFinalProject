@@ -6,6 +6,8 @@
 #include <QKeyEvent>
 #include <iostream>
 
+#include "realtime.h"
+#include "settings.h"
 #include "utils/sceneparser.h"
 
 
