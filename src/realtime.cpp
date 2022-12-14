@@ -117,7 +117,7 @@ void Realtime::initializeGL() {
 
     // making the skybox vbo and vao
     SkyBox::createSkyBoxVBOVAO(&m_skybox_vbo, &m_skybox_vao, skyboxVertices);
-    SkyBox::loadSkyBoxImage(&m_skybox_texture);
+    SkyBox::loadSkyBoxImage(&m_skybox_texture, settings.m_skybox_type);
 
     // Generate and bind a VBO and a VAO for a fullscreen quad
     glGenBuffers(1, &m_fullscreen_vbo);
@@ -209,7 +209,7 @@ void Realtime::paintGL() {
     glBindVertexArray(m_terrain_vao);
 
     // hard-coded
-    glm::vec4 cAmbient = glm::vec4(0.0f);
+    glm::vec4 cAmbient = glm::vec4(0.3f);
     glm::vec4 cDiffuse = glm::vec4(0.0f);
     glm::vec4 cSpecular = glm::vec4(0.0f);
     float shininess = 1.0;
@@ -372,6 +372,9 @@ void Realtime::sceneChanged() {
  */
 void Realtime::settingsChanged() {
     makeCurrent();
+    if (glIni) {
+        SkyBox::loadSkyBoxImage(&m_skybox_texture, settings.m_skybox_type);
+    }
     camera.cameraUpdate(renderData, size().width(), size().height());
     m_view = camera.getViewMatrix();
     m_proj = camera.getPerspectiveMatrix();

@@ -62,9 +62,16 @@ void main() {
     vec4 illumination = vec4(0.0, 0.0, 0.0, 1.0);
 
      //ambient
-    illumination[0] += (ka * cAmbient[0]);
-    illumination[1] += (ka * cAmbient[1]);
-    illumination[2] += (ka * cAmbient[2]);
+    if (wpPos[1] > 0.25) {
+        illumination[0] += (ka * 0.95f);
+        illumination[1] += (ka * 0.95f);
+        illumination[2] += (ka * 0.95f);
+    } else{
+        illumination[0] += (ka * 0.5f);
+        illumination[1] += (ka * 0.4f);
+        illumination[2] += (ka * 0.4f);
+    }
+
 
     for (int i = 0; i < numLights; i++) {
         vec4 light = lights[i];
@@ -133,6 +140,7 @@ void main() {
         illumination[0] += inPenum * fatt * ks * cSpecular[0] * dot2 * color[1];
         illumination[1] += inPenum * fatt * ks * cSpecular[1] * dot2 * color[2];
         illumination[2] += inPenum * fatt * ks * cSpecular[2] * dot2 * color[3];
+
     }
     if(fogType != 0){
         float fogTotal = fogScene(vec3(camPos), wpPos, fogType);

@@ -116,7 +116,7 @@ void Terrain::makeFace() {
     glm::vec3 topLeft, topRight, bottomLeft, bottomRight;
 
     float m_resolution = 5.0;
-    float m_terrainSize = 10.0;
+    float m_terrainSize = 50.0;
     float m_halfRes = m_terrainSize / 2.0;
     float m_heightMultiplier = m_terrainSize; // terrain size gives best default results, but this can be modified as desired
 

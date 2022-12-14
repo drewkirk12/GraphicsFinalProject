@@ -36,6 +36,9 @@ void MainWindow::initialize() {
     QLabel *fog_type_label = new QLabel(); //  fog label
     fog_type_label->setText("Fog Type");
 
+    QLabel *skybox_label = new QLabel(); //  fog label
+    skybox_label->setText("Skybox Type");
+
     QLabel *param1_label = new QLabel(); // Parameter 1 label
     param1_label->setText("Parameter 1:");
     QLabel *param2_label = new QLabel(); // Parameter 2 label
@@ -47,10 +50,10 @@ void MainWindow::initialize() {
 
 
 
-//    // Create checkbox for per-pixel filter
-//    filter1 = new QCheckBox();
-//    filter1->setText(QStringLiteral("Per-Pixel Filter"));
-//    filter1->setChecked(false);
+    // Create checkbox for per-pixel filter
+    clouds_checkbox = new QCheckBox();
+    clouds_checkbox->setText(QStringLiteral("Clouds Toggle"));
+    clouds_checkbox->setChecked(false);
 
     // Create file uploader for scene file
     uploadFile = new QPushButton();
@@ -179,6 +182,27 @@ void MainWindow::initialize() {
     ft1->addWidget(fogTypeBox);
     fogTypeLayout->setLayout(ft1);
 
+    QGroupBox *skyboxLayout = new QGroupBox(); // horizonal slider 1 alignment
+    QHBoxLayout *sbl = new QHBoxLayout();
+
+    // Create slider controls to control parameters
+    skyboxSlider = new QSlider(Qt::Orientation::Horizontal); // Parameter 1 slider
+    skyboxSlider->setTickInterval(1);
+    skyboxSlider->setMinimum(0);
+    skyboxSlider->setMaximum(1);
+    skyboxSlider->setValue(1);
+
+    skyboxBox = new QSpinBox();
+    skyboxBox->setMinimum(0);
+    skyboxBox->setMaximum(1);
+    skyboxBox->setSingleStep(1);
+    skyboxBox->setValue(1);
+
+    // Adds the slider and number box to the parameter layouts
+    sbl->addWidget(skyboxSlider);
+    sbl->addWidget(skyboxBox);
+    skyboxLayout->setLayout(sbl);
+
 
 //    // Extra Credit:
 //    ec1 = new QCheckBox();
@@ -203,7 +227,9 @@ void MainWindow::initialize() {
     vLayout->addWidget(fog_type_label);
     vLayout->addWidget(fogTypeLayout);
 
-//    vLayout->addWidget(filter1);
+    vLayout->addWidget(clouds_checkbox);
+    vLayout->addWidget(skybox_label);
+    vLayout->addWidget(skyboxLayout);
     // Extra Credit:
 //    vLayout->addWidget(ec_label);
 
@@ -233,11 +259,8 @@ void MainWindow::connectUIElements() {
     connectFar();
     connectFog();
     connectFogType();
+    connectSkybox();
 }
-
-//void MainWindow::connectKernelBasedFilter() {
-//    connect(filter2, &QCheckBox::clicked, this, &MainWindow::onKernelBasedFilter);
-//}
 
 
 void MainWindow::connectUploadFile() {
@@ -277,6 +300,11 @@ void MainWindow::connectFogType() {
     connect(fogTypeBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
             this, &MainWindow::onValChangeFogType);
 }
+void MainWindow::connectSkybox() {
+    connect(skyboxSlider, &QSlider::valueChanged, this, &MainWindow::onValChangeSkybox);
+    connect(skyboxBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            this, &MainWindow::onValChangeSkybox);
+}
 
 
 
@@ -287,10 +315,10 @@ void MainWindow::connectFogType() {
 //    connect(ec4, &QCheckBox::clicked, this, &MainWindow::onExtraCredit4);
 //}
 
-//void MainWindow::onPerPixelFilter() {
-//    settings.perPixelFilter = !settings.perPixelFilter;
-//    realtime->settingsChanged();
-//}
+void MainWindow::onCloudsToggle() {
+    settings.cloudsToggle = !settings.cloudsToggle;
+    realtime->settingsChanged();
+}
 
 void MainWindow::onUploadFile() {
     // Get abs path of scene file
@@ -365,6 +393,13 @@ void MainWindow::onValChangeFogType(int newValue) {
     fogTypeSlider->setValue(newValue);
     fogTypeBox->setValue(newValue);
     settings.fogType = fogTypeSlider->value();
+    realtime->settingsChanged();
+}
+
+void MainWindow::onValChangeSkybox(int newValue) {
+    skyboxSlider->setValue(newValue);
+    skyboxBox->setValue(newValue);
+    settings.m_skybox_type = skyboxSlider->value();
     realtime->settingsChanged();
 }
 
