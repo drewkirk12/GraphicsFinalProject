@@ -31,17 +31,10 @@ void MainWindow::initialize() {
     camera_label->setFont(font);
 
     QLabel *fog_label = new QLabel(); //  fog label
-    fog_label->setText("Fog Type");
+    fog_label->setText("Fog Intensity");
 
     QLabel *fog_type_label = new QLabel(); //  fog label
-    fog_type_label->setText("Fog Value");
-
-    QLabel *fog_R_label = new QLabel(); //  fog label
-    fog_R_label->setText("Fog Red");
-    QLabel *fog_G_label = new QLabel(); //  fog label
-    fog_G_label->setText("Fog Green");
-    QLabel *fog_B_label = new QLabel(); //  fog label
-    fog_B_label->setText("Fog Blue");
+    fog_type_label->setText("Fog Type");
 
     QLabel *param1_label = new QLabel(); // Parameter 1 label
     param1_label->setText("Parameter 1:");
@@ -186,71 +179,6 @@ void MainWindow::initialize() {
     ft1->addWidget(fogTypeBox);
     fogTypeLayout->setLayout(ft1);
 
-    // Creates the boxes containing the sliders for fog
-    QGroupBox *fogRLayout = new QGroupBox(); // horizonal slider 1 alignment
-    QHBoxLayout *fr = new QHBoxLayout();
-
-    // Create slider controls to control fog
-    fogRSlider = new QSlider(Qt::Orientation::Horizontal); // fog slider
-    fogRSlider->setTickInterval(1);
-    fogRSlider->setMinimum(1000);
-    fogRSlider->setMaximum(10000);
-    fogRSlider->setValue(10000);
-
-    fogRBox = new QDoubleSpinBox();
-    fogRBox->setMinimum(0.0f);
-    fogRBox->setMaximum(100.f);
-    fogRBox->setSingleStep(0.1f);
-    fogRBox->setValue(100.f);
-
-    // Adds the slider and number box to the fog layouts
-    fr->addWidget(fogRSlider);
-    fr->addWidget(fogRBox);
-    fogRLayout->setLayout(fr);
-
-    // Creates the boxes containing the sliders for fog
-    QGroupBox *fogGLayout = new QGroupBox(); // horizonal slider 1 alignment
-    QHBoxLayout *fg = new QHBoxLayout();
-
-    // Create slider controls to control fog
-    fogGSlider = new QSlider(Qt::Orientation::Horizontal); // fog slider
-    fogGSlider->setTickInterval(1);
-    fogGSlider->setMinimum(1000);
-    fogGSlider->setMaximum(10000);
-    fogGSlider->setValue(10000);
-
-    fogGBox = new QDoubleSpinBox();
-    fogGBox->setMinimum(0.0f);
-    fogGBox->setMaximum(100.f);
-    fogGBox->setSingleStep(0.1f);
-    fogGBox->setValue(100.f);
-
-    // Adds the slider and number box to the fog layouts
-    fg->addWidget(fogGSlider);
-    fg->addWidget(fogGBox);
-    fogGLayout->setLayout(fg);
-
-    // Creates the boxes containing the sliders for fog
-    QGroupBox *fogBLayout = new QGroupBox(); // horizonal slider 1 alignment
-    QHBoxLayout *fb = new QHBoxLayout();
-
-    // Create slider controls to control fog
-    fogBSlider = new QSlider(Qt::Orientation::Horizontal); // fog slider
-    fogBSlider->setTickInterval(1);
-    fogBSlider->setMinimum(1000);
-    fogBSlider->setMaximum(10000);
-    fogBSlider->setValue(10000);
-
-    fogBBox = new QDoubleSpinBox();
-    fogBBox->setMinimum(0.0f);
-    fogBBox->setMaximum(100.f);
-    fogBBox->setSingleStep(0.1f);
-    fogBBox->setValue(100.f);
-
-    // Adds the slider and number box to the fog layouts
-    fb->addWidget(fogBSlider);
-    fb->addWidget(fogBBox);
-    fogBLayout->setLayout(fb);
 
 //    // Extra Credit:
 //    ec1 = new QCheckBox();
@@ -275,12 +203,6 @@ void MainWindow::initialize() {
     vLayout->addWidget(fog_type_label);
     vLayout->addWidget(fogTypeLayout);
 
-    vLayout->addWidget(fog_R_label);
-    vLayout->addWidget(fogRLayout);
-    vLayout->addWidget(fog_G_label);
-    vLayout->addWidget(fogGLayout);
-    vLayout->addWidget(fog_B_label);
-    vLayout->addWidget(fogBLayout);
 //    vLayout->addWidget(filter1);
     // Extra Credit:
 //    vLayout->addWidget(ec_label);
@@ -311,9 +233,6 @@ void MainWindow::connectUIElements() {
     connectFar();
     connectFog();
     connectFogType();
-    connectFogR();
-    connectFogG();
-    connectFogB();
 }
 
 //void MainWindow::connectKernelBasedFilter() {
@@ -358,21 +277,7 @@ void MainWindow::connectFogType() {
     connect(fogTypeBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
             this, &MainWindow::onValChangeFogType);
 }
-void MainWindow::connectFogR() {
-    connect(fogRSlider, &QSlider::valueChanged, this, &MainWindow::onValChangeFogRSlider);
-    connect(fogRBox, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
-            this, &MainWindow::onValChangeFogRBox);
-}
-void MainWindow::connectFogG() {
-    connect(fogGSlider, &QSlider::valueChanged, this, &MainWindow::onValChangeFogGSlider);
-    connect(fogGBox, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
-            this, &MainWindow::onValChangeFogGBox);
-}
-void MainWindow::connectFogB() {
-    connect(fogBSlider, &QSlider::valueChanged, this, &MainWindow::onValChangeFogBSlider);
-    connect(fogBBox, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
-            this, &MainWindow::onValChangeFogBBox);
-}
+
 
 
 //void MainWindow::connectExtraCredit() {
@@ -445,7 +350,7 @@ void MainWindow::onValChangeFarBox(double newValue) {
 }
 
 void MainWindow::onValChangeFogSlider(int newValue) {
-    fogBox->setValue(newValue/100.f);
+    fogBox->setValue(newValue/10000.f);
     settings.fogValue = fogBox->value();
     realtime->settingsChanged();
 }
@@ -463,41 +368,6 @@ void MainWindow::onValChangeFogType(int newValue) {
     realtime->settingsChanged();
 }
 
-void MainWindow::onValChangeFogRSlider(int newValue) {
-    fogRBox->setValue(newValue/100.f);
-    settings.fogColor[0] = fogRBox->value();
-    realtime->settingsChanged();
-}
-void MainWindow::onValChangeFogRBox(double newValue) {
-    fogRSlider->setValue(int(newValue*100.f));
-    //farBox->setValue(newValue);
-    settings.fogColor[0] = fogRBox->value();
-    realtime->settingsChanged();
-}
-
-void MainWindow::onValChangeFogGSlider(int newValue) {
-    fogGBox->setValue(newValue/100.f);
-    settings.fogColor[1] = fogGBox->value();
-    realtime->settingsChanged();
-}
-void MainWindow::onValChangeFogGBox(double newValue) {
-    fogGSlider->setValue(int(newValue*100.f));
-    //farBox->setValue(newValue);
-    settings.fogColor[1] = fogGBox->value();
-    realtime->settingsChanged();
-}
-
-void MainWindow::onValChangeFogBSlider(int newValue) {
-    fogBBox->setValue(newValue/100.f);
-    settings.fogColor[2] = fogBBox->value();
-    realtime->settingsChanged();
-}
-void MainWindow::onValChangeFogBBox(double newValue) {
-    fogBSlider->setValue(int(newValue*100.f));
-    //farBox->setValue(newValue);
-    settings.fogColor[2] = fogBBox->value();
-    realtime->settingsChanged();
-}
 
 //// Extra Credit:
 

@@ -16,7 +16,7 @@ struct Settings {
     bool extraCredit2 = false;
     bool extraCredit3 = false;
     bool extraCredit4 = false;
-    int fogType = 2;
+    int fogType = 1;
     float fogValue = 0.1;
     glm::vec4 fogColor = {0, 0.8, 0, 1};
 };

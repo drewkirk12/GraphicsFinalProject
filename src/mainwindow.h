@@ -25,9 +25,6 @@ private:
     void connectUploadFile();
     void connectFog();
     void connectFogType();
-    void connectFogR();
-    void connectFogG();
-    void connectFogB();
 
     Realtime *realtime;
     //QCheckBox *filter1;
@@ -46,13 +43,6 @@ private:
     QSlider *fogTypeSlider;
     QSpinBox *fogTypeBox;
 
-    QSlider *fogRSlider;
-    QSlider *fogGSlider;
-    QSlider *fogBSlider;
-    QDoubleSpinBox *fogRBox;
-    QDoubleSpinBox *fogGBox;
-    QDoubleSpinBox *fogBBox;
-
     // Extra Credit:
     //QCheckBox *ec1;
 
@@ -69,15 +59,6 @@ private slots:
     void onValChangeFogSlider(int newValue);
     void onValChangeFogBox(double newValue);
     void onValChangeFogType(int newValue);
-
-    void onValChangeFogRSlider(int newValue);
-    void onValChangeFogRBox(double newValue);
-
-    void onValChangeFogGSlider(int newValue);
-    void onValChangeFogGBox(double newValue);
-
-    void onValChangeFogBSlider(int newValue);
-    void onValChangeFogBBox(double newValue);
 
 
 
