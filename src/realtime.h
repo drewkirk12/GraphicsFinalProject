@@ -2,6 +2,7 @@
 
 // Defined before including GLEW to suppress deprecation messages on macOS
 #include "camera.h"
+#include "shapes/Terrain.h"
 #include "shapes/cube.h"
 #include "shapes/cylinder.h"
 #include "shapes/sphere.h"
@@ -63,6 +64,10 @@ private:
     Cube cube;
     Cylinder cylinder;
     Cone cone;
+    Terrain terrain;
+    GLuint m_terrain_vbo;
+    GLuint m_terrain_vao;
+    std::vector<float> m_terrainVertexData;
 
     // globals I'm using for openGL
     GLuint m_shader;     // Stores id of shader program

@@ -197,89 +197,91 @@ void Realtime::paintGL() {
     glUseProgram(0);
 
     glUseProgram(m_shader); // Bind the shader //////////////////////////////////////////////////////////////////////////
-    for (RenderShapeData &shape : renderData.shapes) {
-        glBindVertexArray(shape.shape_vao); // bind current shape vao
+    glBindVertexArray(m_terrain_vao);
 
-        glUniform4fv(glGetUniformLocation(m_shader, "cAmbient"),
-                     1, &(shape.primitive.material.cAmbient[0]));
-        glUniform4fv(glGetUniformLocation(m_shader, "cDiffuse"),
-                     1, &(shape.primitive.material.cDiffuse[0]));
-        glUniform4fv(glGetUniformLocation(m_shader, "cSpecular"),
-                     1, &(shape.primitive.material.cSpecular[0]));
-        glUniform1f(glGetUniformLocation(m_shader, "sh"),
-                    shape.primitive.material.shininess);
+    // hard-coded
+    glm::vec4 cAmbient = glm::vec4(0.0f);
+    glm::vec4 cDiffuse = glm::vec4(0.0f);
+    glm::vec4 cSpecular = glm::vec4(0.0f);
+    float shininess = 1.0;
 
-        int numLights = renderData.lights.size();
-        std::string str;
-        GLint loc;
-        int j = 0;
-        for (j = 0; j < numLights; j++) {
-            SceneLightData light = renderData.lights[j];
-            switch (light.type) {
-                case LightType::LIGHT_DIRECTIONAL:
-                    str = "lights[" + std::to_string(j) + "]";
-                    loc = glGetUniformLocation(m_shader, str.c_str());
-                    glUniform4f(loc, 1, light.dir[0], light.dir[1], light.dir[2]);
-                    break;
-                case LightType::LIGHT_POINT:
-                    str = "lights[" + std::to_string(j) + "]";
-                    loc = glGetUniformLocation(m_shader, str.c_str());
-                    glUniform4f(loc, 0, light.pos[0], light.pos[1], light.pos[2]);
-                    break;
+    glUniform4fv(glGetUniformLocation(m_shader, "cAmbient"), 1, &cAmbient[0]);
+    glUniform4fv(glGetUniformLocation(m_shader, "cDiffuse"), 1, &cDiffuse[0]);
+    glUniform4fv(glGetUniformLocation(m_shader, "cSpecular"), 1, &cSpecular[0]);
+    glUniform1f(glGetUniformLocation(m_shader, "sh"), shininess);
 
-                case LightType::LIGHT_SPOT:
-                    str = "lights[" + std::to_string(j) + "]";
-                    loc = glGetUniformLocation(m_shader, str.c_str());
-                    glUniform4f(loc, 2, light.pos[0], light.pos[1], light.pos[2]);
-
-                    str = "spotDir[" + std::to_string(j) + "]";
-                    loc = glGetUniformLocation(m_shader, str.c_str());
-                    glUniform3f(loc, light.dir[0], light.dir[1], light.dir[2]);
-
-                    // uniform variables for angles to calculate angular fall off
-                    glUniform1f(glGetUniformLocation(m_shader, "thetaO"), light.angle);
-                    glUniform1f(glGetUniformLocation(m_shader, "thetaI"),
-                                (light.angle - light.penumbra));
-                    break;
-                default:
-                    break;
-            }
-            str = "att[" + std::to_string(j) + "]";
+    int numLights = renderData.lights.size();
+    std::string str;
+    GLint loc;
+    int j = 0;
+    for (j = 0; j < numLights; j++) {
+        SceneLightData light = renderData.lights[j];
+        switch (light.type) {
+        case LightType::LIGHT_DIRECTIONAL:
+            str = "lights[" + std::to_string(j) + "]";
             loc = glGetUniformLocation(m_shader, str.c_str());
-            glUniform3f(loc, light.function[0], light.function[1], light.function[2]);
-
-            str = "colors[" + std::to_string(j) + "]";
+            glUniform4f(loc, 1, light.dir[0], light.dir[1], light.dir[2]);
+            break;
+        case LightType::LIGHT_POINT:
+            str = "lights[" + std::to_string(j) + "]";
             loc = glGetUniformLocation(m_shader, str.c_str());
-            glUniform4f(loc, 1, renderData.lights[j].color[0],
-                                 renderData.lights[j].color[1],
-                                 renderData.lights[j].color[2]);
+            glUniform4f(loc, 0, light.pos[0], light.pos[1], light.pos[2]);
+            break;
+
+        case LightType::LIGHT_SPOT:
+            str = "lights[" + std::to_string(j) + "]";
+            loc = glGetUniformLocation(m_shader, str.c_str());
+            glUniform4f(loc, 2, light.pos[0], light.pos[1], light.pos[2]);
+
+            str = "spotDir[" + std::to_string(j) + "]";
+            loc = glGetUniformLocation(m_shader, str.c_str());
+            glUniform3f(loc, light.dir[0], light.dir[1], light.dir[2]);
+
+            // uniform variables for angles to calculate angular fall off
+            glUniform1f(glGetUniformLocation(m_shader, "thetaO"), light.angle);
+            glUniform1f(glGetUniformLocation(m_shader, "thetaI"),
+                        (light.angle - light.penumbra));
+            break;
+        default:
+            break;
         }
-        glUniform1i(glGetUniformLocation(m_shader, "numLights"), j);
-        glUniformMatrix4fv(glGetUniformLocation(m_shader, "ctm"),
-                                1, GL_FALSE, &(shape.ctm[0][0]));
-        glUniformMatrix4fv(glGetUniformLocation(m_shader, "n_ctm"),
-                              1, GL_FALSE, &(shape.normCTM[0][0]));
-        glUniformMatrix4fv(glGetUniformLocation(m_shader, "viewMat"),
-                                         1, GL_FALSE, &m_view[0][0]);
-        glUniformMatrix4fv(glGetUniformLocation(m_shader, "projMat"),
-                                         1, GL_FALSE, &m_proj[0][0]);
+        str = "att[" + std::to_string(j) + "]";
+        loc = glGetUniformLocation(m_shader, str.c_str());
+        glUniform3f(loc, light.function[0], light.function[1], light.function[2]);
 
-        glUniform1f(glGetUniformLocation(m_shader, "ka"), m_ka);
-        glUniform1f(glGetUniformLocation(m_shader, "kd"), m_kd);
-        glUniform1f(glGetUniformLocation(m_shader, "ks"), m_ks);
-
-        glUniform1i(glGetUniformLocation(m_shader, "fogType"), settings.fogType);
-        float testFogVal = settings.fogValue;
-        glUniform1f(glGetUniformLocation(m_shader, "fogIntensity"), (settings.fogValue)/100);
-
-        glm::vec4 origin{0.0f,0.0f,0.0f, 1.0f};
-        glm::vec4 camP = glm::inverse(m_view) * origin;
-        glUniform4fv(glGetUniformLocation(m_shader, "camPos"), 1, &camP[0]);
-        // actually draws the triangles
-        glDrawArrays(GL_TRIANGLES, 0, shape.vertData.size() / 6);
-        glBindVertexArray(0);
-
+        str = "colors[" + std::to_string(j) + "]";
+        loc = glGetUniformLocation(m_shader, str.c_str());
+        glUniform4f(loc, 1, renderData.lights[j].color[0],
+                renderData.lights[j].color[1],
+                renderData.lights[j].color[2]);
     }
+    glUniform1i(glGetUniformLocation(m_shader, "numLights"), j);
+
+    glm::mat4 placeholderCTM = glm::mat4(1);
+
+    glUniformMatrix4fv(glGetUniformLocation(m_shader, "ctm"),
+                       1, GL_FALSE, &placeholderCTM[0][0]);
+    glUniformMatrix4fv(glGetUniformLocation(m_shader, "n_ctm"),
+                       1, GL_FALSE, &placeholderCTM[0][0]);
+    glUniformMatrix4fv(glGetUniformLocation(m_shader, "viewMat"),
+                       1, GL_FALSE, &m_view[0][0]);
+    glUniformMatrix4fv(glGetUniformLocation(m_shader, "projMat"),
+                       1, GL_FALSE, &m_proj[0][0]);
+
+    glUniform1f(glGetUniformLocation(m_shader, "ka"), m_ka);
+    glUniform1f(glGetUniformLocation(m_shader, "kd"), m_kd);
+    glUniform1f(glGetUniformLocation(m_shader, "ks"), m_ks);
+
+    glUniform1i(glGetUniformLocation(m_shader, "fogType"), settings.fogType);
+    float testFogVal = settings.fogValue;
+    glUniform1f(glGetUniformLocation(m_shader, "fogIntensity"), (settings.fogValue)/100);
+
+    glm::vec4 origin{0.0f,0.0f,0.0f, 1.0f};
+    glm::vec4 camP = glm::inverse(m_view) * origin;
+    glUniform4fv(glGetUniformLocation(m_shader, "camPos"), 1, &camP[0]);
+
+    glDrawArrays(GL_TRIANGLES, 0, m_terrainVertexData.size() / 6);
+    glBindVertexArray(0);
     // Unbind the shader
     glUseProgram(0);
 
@@ -387,103 +389,30 @@ void Realtime::settingsChanged() {
 void Realtime::updateVBO() {
     makeCurrent(); // allows GL context to be updated here
     // tracks which shapes have had their "first" of their kind come through
-    std::vector<int> shapeCheck{1, 1, 1, 1};
-    for (RenderShapeData &shape : renderData.shapes) {
 
-        boolean makeNewVBO = false; // used below to see whether VBO is needed
-        RenderShapeData *firstRender; // pointer used to access prior VAO/VBOs
+    glGenBuffers(1, &m_terrain_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, m_terrain_vbo);
 
-        switch (shape.primitive.type) {
-            case PrimitiveType::PRIMITIVE_SPHERE:
-                if (shapeCheck[0]) {
-                    makeNewVBO = true;
-                    shapeCheck[0] = 0;
-                    sphere.storeRender(&shape);
-                    shape.vertData = sphere.updateParams(
-                                  settings.shapeParameter1,
-                                  settings.shapeParameter2);
-                    storedRenders.push_back(shape);
-                }
-                else {
-                    firstRender = sphere.getRender();
-                }
-                break;
-            case PrimitiveType::PRIMITIVE_CYLINDER:
-                if (shapeCheck[1]) {
-                    makeNewVBO = true;
-                    shapeCheck[1] = 0;
-                    cylinder.storeRender(&shape);
-                    shape.vertData = cylinder.updateParams(
-                                   settings.shapeParameter1,
-                                   settings.shapeParameter2);
-                    storedRenders.push_back(shape);
-                }
-                else {
-                    firstRender = cylinder.getRender();
-                }
+    m_terrainVertexData = terrain.updateParams(settings.shapeParameter1);
+    glBufferData(GL_ARRAY_BUFFER, (sizeof(GLfloat) *
+                                   m_terrainVertexData.size()),
+                 (m_terrainVertexData.data()), GL_STATIC_DRAW);
 
-                break;
-            case PrimitiveType::PRIMITIVE_CONE:
-                if (shapeCheck[2]) {
-                    makeNewVBO = true;
-                    shapeCheck[2] = 0;
-                    cone.storeRender(&shape);
-                    shape.vertData = cone.updateParams(
-                               settings.shapeParameter1,
-                               settings.shapeParameter2);
-                    storedRenders.push_back(shape);
-                }
-                else {
-                    firstRender = cone.getRender();
-                }
+    // Vertex Array Objects
+    glGenVertexArrays(1, &m_terrain_vao);
+    glBindVertexArray(m_terrain_vao);
 
-                break;
-            case PrimitiveType::PRIMITIVE_CUBE:
-                if (shapeCheck[3]) {
-                    makeNewVBO = true;
-                    shapeCheck[3] = 0;
-                    cube.storeRender(&shape);
-                    storedRenders.push_back(shape);
-                    shape.vertData = cube.updateParams(
-                                settings.shapeParameter1);
-                }
-                else {
-                    firstRender = cube.getRender();
-                }
-                break;
-            default:
-                break;
-        }
-        if (makeNewVBO) {
-            glGenBuffers(1, &(shape.shape_vbo));
-            glBindBuffer(GL_ARRAY_BUFFER, shape.shape_vbo);
-            glBufferData(GL_ARRAY_BUFFER, (sizeof(GLfloat) *
-                                           shape.vertData.size()),
-                         (shape.vertData.data()), GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
 
-            // Vertex Array Objects
-
-            glGenVertexArrays(1, &(shape.shape_vao));
-            glBindVertexArray(shape.shape_vao);
-
-            glEnableVertexAttribArray(0);
-            glEnableVertexAttribArray(1);
-
-            // two sets of three floats, vertices, norms
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 24,
-                                  reinterpret_cast<void*>(0));
-            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 24,
-                                  reinterpret_cast<void*>((3 * sizeof(GLfloat))));
-            // Returning to Default State
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-            glBindVertexArray(0);
-        }
-        else {
-            shape.shape_vbo = firstRender->shape_vbo;
-            shape.shape_vao = firstRender->shape_vao;
-            shape.vertData = firstRender->vertData;
-        }
-    }
+    // two sets of three floats, vertices, norms
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 24,
+                          reinterpret_cast<void*>(0));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 24,
+                          reinterpret_cast<void*>((3 * sizeof(GLfloat))));
+    // Returning to Default State
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 }
 
 // updates m_keyMap according to key presses
