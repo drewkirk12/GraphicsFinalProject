@@ -2,9 +2,10 @@
 
 #include <iostream>
 
-#include <glm/gtc/random.hpp>
-
 #include <utils/shaderloader.h>
+
+#include "noise.h"
+#include "heightgrad.h"
 
 namespace cloud {
 
@@ -17,8 +18,13 @@ GLuint sliceVAO;
 int numQuads;
 
 GLuint noiseTex;
-GLuint gradTex;
-int sampleResolution;
+GLuint noiseGradTex;
+int noiseSampleResolution = 64;
+
+int heightTexHeight = 50;
+float heightTexResolution = 1;
+GLuint heightTex;
+GLuint heightGradTex;
 
 float sliceDistance = 0.2;
 
@@ -33,7 +39,6 @@ void addVector(std::vector<GLfloat> &data, float x, float y, float z) {
     data.push_back(z);
 }
 
-
 void defineSlicePlanes(float far);
 
 void finalizeClouds() {
@@ -43,10 +48,7 @@ void finalizeClouds() {
 void initializeClouds() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
-    // https://stackoverflow.com/questions/17763021/opengl-blending-renders-black-on-black-as-gray
-    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,
-                        GL_ONE,       GL_ONE_MINUS_SRC_ALPHA);
-    // Initialize planes
+
     cloudProgram = ShaderLoader::createShaderProgram(
                 "./resources/shaders/cloud.vert",
                 "./resources/shaders/cloud.frag");
@@ -57,19 +59,34 @@ void initializeClouds() {
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_3D, 0);
 
-    glGenTextures(1, &gradTex);
-    glBindTexture(GL_TEXTURE_3D, gradTex);
+    glGenTextures(1, &noiseGradTex);
+    glBindTexture(GL_TEXTURE_3D, noiseGradTex);
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_3D, 0);
+
+    glGenTextures(1, &heightTex);
+    glBindTexture(GL_TEXTURE_1D, heightTex);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_1D, 0);
+    glGenTextures(1, &heightGradTex);
+    glBindTexture(GL_TEXTURE_1D, heightGradTex);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_1D, 0);
+
 
     glGenBuffers(1, &sliceVBO);
     glGenVertexArrays(1, &sliceVAO);
 
     initialized = true;
 
-    sampleResolution = 64;
-    generateNoise();
+    generateNoise(noiseSampleResolution, noiseTex, noiseGradTex);
+
+    generateHeightGradient(heightTexHeight,
+                           heightTexResolution,
+                           heightTex, heightGradTex);
 }
 
 void setFarPlane(float far) {
@@ -85,8 +102,7 @@ void defineSlicePlanes(float far) {
     numQuads = 0;
 
     int numSlices = far / sliceDistance - 1;
-    // Add planes from farthest to nearest
-    for (int i = numSlices; i > 0; i--) {
+    for (int i = 0; i < numSlices; i++) {
         // If you shrink this value, a border should appear.
         float size = 1;
         float z = -i * sliceDistance;
@@ -168,142 +184,41 @@ void updateCameraUniforms() {
     glUseProgram(0);
 }
 
-inline int getIndex(glm::ivec3 coord, int dimSize) {
-    glm::ivec3 wrapped = {
-        coord.x % dimSize,
-        coord.y % dimSize,
-        coord.z % dimSize
-    };
-    return ((wrapped[0] * dimSize) + wrapped[1]) * dimSize + wrapped[2];
-}
-
-void addGradient(int gradientResolution,
-                 std::vector<glm::vec4> &texData,
-                 std::vector<glm::vec3> &gradData);
-
-void generateNoise() {
-    std::vector<glm::vec4> texData(sampleResolution * sampleResolution * sampleResolution);
-    // A gradient vector of the density
-    std::vector<glm::vec3> gradData(sampleResolution * sampleResolution * sampleResolution);
-
-    // For one loop,
-    // First, generate all gradient vectors
-    addGradient(2, texData, gradData);
-    addGradient(4, texData, gradData);
-    addGradient(8, texData, gradData);
-    addGradient(16, texData, gradData);
-
-    // Pass noise texture
-
-    glBindTexture(GL_TEXTURE_3D, noiseTex);
-    glTexImage3D(GL_TEXTURE_3D,
-                 0, // level
-                 GL_RGBA, // internalformat
-                 sampleResolution,
-                 sampleResolution,
-                 sampleResolution,
-                 0, // border
-                 GL_RGBA, // format
-                 GL_FLOAT,
-                 texData.data());
-    glBindTexture(GL_TEXTURE_3D, 0);
-
-    glBindTexture(GL_TEXTURE_3D, gradTex);
-    glTexImage3D(GL_TEXTURE_3D,
-                 0, // level
-                 GL_RGB, // internalformat
-                 sampleResolution,
-                 sampleResolution,
-                 sampleResolution,
-                 0, // border
-                 GL_RGB, // format
-                 GL_FLOAT,
-                 gradData.data());
-    glBindTexture(GL_TEXTURE_3D, 0);
-}
-
-void initGradients(std::vector<glm::vec3> &gradients);
-
-void addGradient(int gradientResolution,
-                 std::vector<glm::vec4> &texData,
-                 std::vector<glm::vec3> &gradData) {
-
-    // Generate textureSize * textureSize vec4s
-    std::vector<glm::vec3> gradients(gradientResolution * gradientResolution * gradientResolution);
-    initGradients(gradients);
-
-    // At each texture coordinate, sample the gradients and compute
-    //  (1) color
-    //  (2) density
-    //  (3) local gradient (points in direction of denser clouds)
-    for (int i1 = 0; i1 < sampleResolution; i1++) {
-    for (int i2 = 0; i2 < sampleResolution; i2++) {
-    for (int i3 = 0; i3 < sampleResolution; i3++) {
-        glm::ivec3 indexCoord(i1, i2, i3);
-        int index = getIndex(indexCoord, sampleResolution);
-
-        // Back-sampled coordinate, from 0.5 to sampleResolution - 0.5
-        glm::vec3 coord = (glm::vec3(indexCoord) + glm::vec3(0.5))
-                / ((float)sampleResolution);
-
-        // Scale coordinate to gradient pixel space
-        glm::vec3 gradientScaledCoord = coord * ((float)gradientResolution);
-        glm::ivec3 corner = glm::floor(gradientScaledCoord);
-        glm::vec3 offset = gradientScaledCoord - glm::vec3(corner);
-
-        float alpha = 0;
-        glm::vec3 localGrad(0);
-
-        // Sample gradient from each corner
-        for (int j1 = 0; j1 < 2; j1++) {
-        for (int j2 = 0; j2 < 2; j2++) {
-        for (int j3 = 0; j3 < 2; j3++) {
-            glm::ivec3 selectedCorner(j1, j2, j3);
-            glm::vec3 localOffset = offset - glm::vec3(selectedCorner);
-
-            glm::vec3 gradient = gradients[
-                    getIndex(corner + selectedCorner, gradientResolution)];
-            float dot = glm::dot(localOffset, gradient);
-            glm::vec3 nearness = glm::vec3(1) - glm::abs(localOffset);
-            float weight = nearness.x * nearness.y * nearness.z;
-            alpha += dot * weight;
-            localGrad += gradient * weight;
-        }
-        }
-        }
-
-        glm::vec3 color = glm::vec3(0.8);
-        texData[index] += glm::vec4(color, alpha) / (float) gradientResolution;
-        gradData[index] += localGrad / (float) gradientResolution;
-    }
-    }
-    }
-}
-
-void initGradients(std::vector<glm::vec3> &gradients) {
-    for (size_t i = 0; i < gradients.size(); i++) {
-        gradients[i] = glm::sphericalRand<GLfloat>(1);
-    }
-}
-
 void renderClouds() {
     glUseProgram(cloudProgram);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_3D, noiseTex);
     glUniform1i(glGetUniformLocation(cloudProgram, "noiseTex"), 0);
-
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_3D, gradTex);
-    glUniform1i(glGetUniformLocation(cloudProgram, "gradTex"), 1);
+    glBindTexture(GL_TEXTURE_3D, noiseGradTex);
+    glUniform1i(glGetUniformLocation(cloudProgram, "noiseGradTex"), 1);
+
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_1D, heightTex);
+    glUniform1i(glGetUniformLocation(cloudProgram, "heightTex"), 2);
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_1D, heightGradTex);
+    glUniform1i(glGetUniformLocation(cloudProgram, "heightGradTex"), 3);
+    glUniform1ui(glGetUniformLocation(cloudProgram, "heightTexHeight"),
+                 heightTexHeight);
 
     glBindVertexArray(sliceVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 6 * numQuads);
+    // Render back to front
+    for (int i = numQuads - 1; i >= 0; i--) {
+        // First, render the slice into the light buffer
+        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,
+                            GL_ONE,       GL_ONE_MINUS_SRC_ALPHA);
+
+        // Then, render the slice into the eye buffer
+        // glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,
+        //                     GL_ONE_MINUS_DST_ALPHA, GL_ONE);
+        glDrawArrays(GL_TRIANGLES, 6 * i, 6);
+    }
     glBindVertexArray(0);
 
-    assert(glGetError() == 0);
-
     glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_1D, 0);
     glBindTexture(GL_TEXTURE_3D, 0);
     glUseProgram(0);
 }

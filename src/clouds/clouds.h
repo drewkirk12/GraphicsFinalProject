@@ -2,7 +2,6 @@
 
 #include <camera.h>
 
-
 namespace cloud {
     void initializeClouds();
     void finalizeClouds();

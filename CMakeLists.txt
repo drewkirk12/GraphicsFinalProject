@@ -53,6 +53,8 @@ add_executable(${PROJECT_NAME}
     src/shapes/shapefunctions.h
 
     src/clouds/clouds.cpp
+    src/clouds/heightgrad.cpp
+    src/clouds/noise.cpp
 )
 
 # GLM: this creates its library and allows you to `#include "glm/..."`
