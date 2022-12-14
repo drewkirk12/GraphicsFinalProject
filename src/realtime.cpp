@@ -294,7 +294,9 @@ void Realtime::paintGL() {
     // Unbind the shader
     glUseProgram(0);
 
-    cloud::renderClouds();
+    if (settings.cloudsToggle) {
+        cloud::renderClouds();
+    }
 
     // painting from framebuffer back to screen applying any effects
     // triggered by m_invert_bool or m_kernel_bool

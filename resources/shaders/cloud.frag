@@ -35,7 +35,7 @@ void main() {
     // Cut off clouds below horizon
     density *= smoothstep(startHeight, startHeight + 2, pos_world.y);
     // Add curve
-    float curve = -startHeight + pow(length(pos_world.xz) / 10, 2);
+    float curve = -startHeight + pow(length(pos_world.xz) / 20, 2);
     h += curve;
     // Limit clouds to a reasonable area
     density *= step(0, h) - step(heightTexHeight, h);
@@ -49,7 +49,7 @@ void main() {
     if (density < 0) discard;
 
     // Give clouds a harder edge
-    density = 0.7 * smoothstep(0, 0.1, density);
+    density = 0.5 * smoothstep(0, 0.1, density);
     // If our volumetric planes are close together, decrease
     // cloud density.
     density = 1 - pow(1 - density, layerDensity);

@@ -242,7 +242,7 @@ void MainWindow::initialize() {
 
     // Set default values for near and far planes
     onValChangeNearBox(0.1f);
-    onValChangeFarBox(30.f);
+    onValChangeFarBox(100.f);
     onValChangeFogBox(0.0f);
 }
 
@@ -260,6 +260,7 @@ void MainWindow::connectUIElements() {
     connectFog();
     connectFogType();
     connectSkybox();
+    connectCloudsToggle();
 }
 
 
@@ -304,6 +305,10 @@ void MainWindow::connectSkybox() {
     connect(skyboxSlider, &QSlider::valueChanged, this, &MainWindow::onValChangeSkybox);
     connect(skyboxBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
             this, &MainWindow::onValChangeSkybox);
+}
+
+void MainWindow::connectCloudsToggle() {
+    connect(clouds_checkbox, &QCheckBox::toggled, this, &MainWindow::onCloudsToggle);
 }
 
 

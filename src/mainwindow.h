@@ -26,6 +26,7 @@ private:
     void connectFog();
     void connectFogType();
     void connectSkybox();
+    void connectCloudsToggle();
 
     Realtime *realtime;
     QCheckBox *clouds_checkbox;
