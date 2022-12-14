@@ -202,7 +202,7 @@ void Realtime::paintGL() {
     glBindVertexArray(m_terrain_vao);
 
     // hard-coded
-    glm::vec4 cAmbient = glm::vec4(0.0f);
+    glm::vec4 cAmbient = glm::vec4(0.3f);
     glm::vec4 cDiffuse = glm::vec4(0.0f);
     glm::vec4 cSpecular = glm::vec4(0.0f);
     float shininess = 1.0;
