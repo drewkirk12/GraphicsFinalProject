@@ -25,9 +25,10 @@ private:
     void connectUploadFile();
     void connectFog();
     void connectFogType();
+    void connectSkybox();
 
     Realtime *realtime;
-    //QCheckBox *filter1;
+    QCheckBox *clouds_checkbox;
     QPushButton *uploadFile;
     QSlider *p1Slider;
     QSlider *p2Slider;
@@ -42,12 +43,14 @@ private:
     QDoubleSpinBox *fogBox;
     QSlider *fogTypeSlider;
     QSpinBox *fogTypeBox;
+    QSlider *skyboxSlider;
+    QSpinBox *skyboxBox;
 
     // Extra Credit:
     //QCheckBox *ec1;
 
 private slots:
-    //void onPerPixelFilter();
+    void onCloudsToggle();
     //void onKernelBasedFilter();
     void onUploadFile();
     void onValChangeP1(int newValue);
@@ -59,5 +62,6 @@ private slots:
     void onValChangeFogSlider(int newValue);
     void onValChangeFogBox(double newValue);
     void onValChangeFogType(int newValue);
+    void onValChangeSkybox(int newValue);
 
 };

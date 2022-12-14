@@ -12,6 +12,7 @@ struct Settings {
     float farPlane = 1;
     bool perPixelFilter = false;
     bool kernelBasedFilter = false;
+    bool cloudsToggle = false;
     bool extraCredit1 = false;
     bool extraCredit2 = false;
     bool extraCredit3 = false;
@@ -19,6 +20,7 @@ struct Settings {
     int fogType = 1;
     float fogValue = 0.1;
     glm::vec4 fogColor = {0, 0.8, 0, 1};
+    int m_skybox_type = 1;
 };
 
 
