@@ -62,7 +62,7 @@ void main() {
     vec4 illumination = vec4(0.0, 0.0, 0.0, 1.0);
 
      //ambient
-    if (wpPos[1] > 0.25) {
+    if (wpPos[1] > 0.45) {
         illumination[0] += (ka * 0.95f);
         illumination[1] += (ka * 0.95f);
         illumination[2] += (ka * 0.95f);
