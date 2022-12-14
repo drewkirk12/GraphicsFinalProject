@@ -84,12 +84,12 @@ qt6_add_resources(${PROJECT_NAME} "Resources"
         resources/shaders/fbo.vert
         resources/shaders/skybox.frag
         resources/shaders/skybox.vert
-        resources/skybox/back.jpg
-        resources/skybox/bottom.jpg
-        resources/skybox/front.jpg
-        resources/skybox/left.jpg
-        resources/skybox/right.jpg
-        resources/skybox/top.jpg
+        resources/skybox/dgback.jpg
+        resources/skybox/dgbottom.png
+        resources/skybox/dgfront.jpg
+        resources/skybox/dgleft.jpg
+        resources/skybox/dgright.jpg
+        resources/skybox/dgtop.jpg
 )
 
 # GLEW: this provides support for Windows (including 64-bit)

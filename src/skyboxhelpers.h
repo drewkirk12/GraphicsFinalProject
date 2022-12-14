@@ -37,27 +37,27 @@ public:
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, *m_skybox_texture);
 
-        QString back_filepath = QString(":/resources/skybox/back.jpg");
+        QString back_filepath = QString(":/resources/skybox/dgback.jpg");
         QImage m_back = QImage(back_filepath);
         m_back = m_back.convertToFormat(QImage::Format_RGBA8888);
 
-        QString bottom_filepath = QString(":/resources/skybox/bottom.jpg");
+        QString bottom_filepath = QString(":/resources/skybox/dgback.jpg");
         QImage m_bottom = QImage(bottom_filepath);
         m_bottom = m_bottom.convertToFormat(QImage::Format_RGBA8888);
 
-        QString front_filepath = QString(":/resources/skybox/front.jpg");
+        QString front_filepath = QString(":/resources/skybox/dgfront.jpg");
         QImage m_front = QImage(front_filepath);
         m_front = m_front.convertToFormat(QImage::Format_RGBA8888);
 
-        QString left_filepath = QString(":/resources/skybox/left.jpg");
+        QString left_filepath = QString(":/resources/skybox/dgleft.jpg");
         QImage m_left = QImage(left_filepath);
         m_left = m_left.convertToFormat(QImage::Format_RGBA8888);
 
-        QString right_filepath = QString(":/resources/skybox/right.jpg");
+        QString right_filepath = QString(":/resources/skybox/dgright.jpg");
         QImage m_right = QImage(right_filepath);
         m_right = m_right.convertToFormat(QImage::Format_RGBA8888);
 
-        QString top_filepath = QString(":/resources/skybox/top.jpg");
+        QString top_filepath = QString(":/resources/skybox/dgtop.jpg");
         QImage m_top = QImage(top_filepath);
         m_top = m_top.convertToFormat(QImage::Format_RGBA8888);
 
