@@ -37,6 +37,11 @@ add_executable(${PROJECT_NAME}
     src/shapes/cube.cpp
     src/shapes/cylinder.cpp
     src/shapes/cone.cpp
+    src/shapes/Terrain.cpp
+
+    src/clouds/clouds.cpp
+    src/clouds/heightgrad.cpp
+    src/clouds/noise.cpp
 
     src/mainwindow.h
     src/realtime.h
@@ -50,11 +55,9 @@ add_executable(${PROJECT_NAME}
     src/shapes/cube.h
     src/shapes/cylinder.h
     src/shapes/cone.h
+    src/shapes/Terrain.h
     src/shapes/shapefunctions.h
-
-    src/clouds/clouds.cpp
-    src/clouds/heightgrad.cpp
-    src/clouds/noise.cpp
+    src/skyboxhelpers.h
 )
 
 # GLM: this creates its library and allows you to `#include "glm/..."`
