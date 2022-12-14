@@ -8,8 +8,9 @@
 #include "utils/sceneparser.h"
 #include "utils/shaderloader.h"
 #include "shapes/sphere.h"
+#include "skyboxhelpers.h"
 
-// ================== Project 6!
+/// Realtime Class from Project 6, used as code base for our realtime pipeline.
 
 /**
  * @brief Realtime::Realtime
@@ -18,8 +19,7 @@
  *  - this constructor sets up mouse/keyboard interaction
  */
 Realtime::Realtime(QWidget *parent)
-    : QOpenGLWidget(parent)
-{
+    : QOpenGLWidget(parent) {
     m_prev_mouse_pos = glm::vec2(size().width()/2, size().height()/2);
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
@@ -40,17 +40,21 @@ void Realtime::finish() {
     killTimer(m_timer);
     this->makeCurrent();
     // uses global, storedRenders, which is filled in updateVBO function below
-    // Look at README for full explanation.
     for (RenderShapeData &shape : storedRenders) {
         glDeleteBuffers(1, &(shape.shape_vbo));
         glDeleteVertexArrays(1, &(shape.shape_vbo));
     }
-    // freeing up allocated resources for the fbo
+    // freeing up allocated resources for base program
     glDeleteProgram(m_shader);
     glDeleteProgram(m_fbo_shader);
     glDeleteVertexArrays(1, &m_fullscreen_vao);
     glDeleteBuffers(1, &m_fullscreen_vbo);
-
+    // freeing skybox-related materials
+    glDeleteProgram(m_skybox_shader);
+    glDeleteVertexArrays(1, &m_skybox_vao);
+    glDeleteBuffers(1, &m_skybox_vbo);
+    glDeleteTextures(1, &m_skybox_texture);
+    // freeing fbo-related texture, renderbuffer
     glDeleteTextures(1, &m_fbo_texture);
     glDeleteRenderbuffers(1, &m_fbo_renderbuffer);
     glDeleteFramebuffers(1, &m_fbo);
@@ -105,70 +109,9 @@ void Realtime::initializeGL() {
 
 
     // making the skybox vbo and vao
-
-
-    glGenBuffers(1, &m_skybox_vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, m_skybox_vbo);
-    glBufferData(GL_ARRAY_BUFFER, skyboxVertices.size()*sizeof(GLfloat), skyboxVertices.data(), GL_STATIC_DRAW);
-    glGenVertexArrays(1, &m_skybox_vao);
-    glBindVertexArray(m_skybox_vao);
-
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
-
-    //reset
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+    SkyBox::createSkyBoxVBOVAO(&m_skybox_vbo, &m_skybox_vao, skyboxVertices);
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    glGenTextures(1, &m_skybox_texture);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, m_skybox_texture);
-
-    QString back_filepath = QString(":/resources/skybox/back.jpg");
-    m_back = QImage(back_filepath);
-    m_back = m_back.convertToFormat(QImage::Format_RGBA8888);
-
-    QString bottom_filepath = QString(":/resources/skybox/bottom.jpg");
-    m_bottom = QImage(bottom_filepath);
-    m_bottom = m_bottom.convertToFormat(QImage::Format_RGBA8888);
-
-    QString front_filepath = QString(":/resources/skybox/front.jpg");
-    m_front = QImage(front_filepath);
-    m_front = m_front.convertToFormat(QImage::Format_RGBA8888);
-
-    QString left_filepath = QString(":/resources/skybox/left.jpg");
-    m_left = QImage(left_filepath);
-    m_left = m_left.convertToFormat(QImage::Format_RGBA8888);
-
-    QString right_filepath = QString(":/resources/skybox/right.jpg");
-    m_right = QImage(right_filepath);
-    m_right = m_right.convertToFormat(QImage::Format_RGBA8888);
-
-    QString top_filepath = QString(":/resources/skybox/top.jpg");
-    m_top = QImage(top_filepath);
-    m_top = m_top.convertToFormat(QImage::Format_RGBA8888);
-
-    std::vector<QImage> faces =
-    {
-        m_right,
-        m_left,
-        m_top,
-        m_bottom,
-        m_front,
-        m_back
-    };
-    for (unsigned int i = 0; i < faces.size(); i++) {
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-                     0, GL_RGBA, faces[i].width(), faces[i].height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, faces[i].bits());
-    }
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+    SkyBox::loadSkyBoxImage(&m_skybox_texture);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

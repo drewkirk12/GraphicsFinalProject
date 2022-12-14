@@ -81,12 +81,6 @@ private:
     GLuint m_skybox_vao;
     GLuint m_skybox_vbo;
 
-    QImage m_back;
-    QImage m_bottom;
-    QImage m_front;
-    QImage m_left;
-    QImage m_right;
-    QImage m_top;
 
     // Project 6: new member variables
     GLuint m_defaultFBO; // default is set to 2 in initializeGL

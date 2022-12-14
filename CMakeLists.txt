@@ -51,6 +51,7 @@ add_executable(${PROJECT_NAME}
     src/shapes/cylinder.h
     src/shapes/cone.h
     src/shapes/shapefunctions.h
+    src/skyboxhelpers.h
 )
 
 # GLM: this creates its library and allows you to `#include "glm/..."`
