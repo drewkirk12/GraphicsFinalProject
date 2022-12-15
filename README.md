@@ -1,62 +1,79 @@
-# Projects 5 & 6: Lights, Camera & Action!
+# Final Project:
 
-All project handouts can be found [here](https://cs1230.graphics/projects).
+General Overview:
+The “Triple A Game Studio” project group aimed to generate an environment
+similar to those found in Pokemon Scarlet and Violet. Toward this end, we
+attempted to implement four new features, a fog effect, clouds,
+procedurally generated terrain, and skyboxes. In the end, we feel
+as if we achieved all of these goals as all of these effects are
+implemented and work in tandem with each other. Our video demo shows
+all these features in action. We believe that there are improvements
+to make to each of the features independently as well as in their integration,
+but, overall, we feel as if we achieved our goals.
 
-# Project 6: README!
-DEFAULT FBO - set to 2 (only 1 framebuffer is used)
+Fog Effects:
+The Fog effect went through a few iterations before landing on the
+real-time implementation currently shown. The initial idea involved
+attempting photorealistic volumetric raytracing. But, as we researched,
+we preferred implementing a real-time fog effect using a handful of techniques.
+The primary method used linearly interpolated between the Phong calculated
+color and an RGBA fog color. The amount of this fog color added at any point
+is calculated using a method outlined by an article listed below titled
+“Analytical Fog Density”. This method involves taking 3 separate sin waves
+each with slightly different frequencies. These sin waves are integrated
+between the camera position and the intersection point given an input of the
+x, y, or z position for each of the three sine waves respectively.
+Once calculated these values are summed and added to a based fog amount
+given by the fog intensity slider and that amount of fog is interpolated
+onto the initial color.
+A minor alteration is added when fog type three is selected. In this case,
+above a specific y coordinate, no fog is added to the scene. In the range
+below, the fog is linearly scaled based on the calculation above. Below that range, the fog is exactly as it was based on the previous method.
 
-Design Choices:
-- Different kinds of lights are handled by the default.frag
-file by assigning the lights[0] position in the
-uniform variable sent it as the enum
-corresponding to the different light types. In the GPU,
-an if-statement handles the light types by checking this.
+Terrain Generation:
+Our initial idea was to import an existing mesh into the project, but after
+some consideration we decided the fog and the skybox would be showcased better
+if we could get a mesh that had lots of peaks and valleys, so we decided
+to procedurally generate a mountain terrain. To accomplish this we set up
+a plane triangle mesh, implemented tesselation for the plane by splitting
+it into a number of adjacent tiles depending on the tesselation parameter,
+and used perlin noise sampled at the vertex points to get smoothly varying
+height values for each vertex, which gave us a mountain terrain. We layered
+some different noise values and used easing to smooth it out until we got a nice
+looking mesh. Finally we implemented a “snowy caps” visual trick by setting
+the color of the mountains to a very light gray above a certain height threshold.
 
-- A scalar of PI/256 is used to regulate how much mouse
-movement rotates the camera's look vector.
+Sky Boxes:
+Skyboxes were a late addition to the project, but seemed to tie all of our ideas
+together: generated terrain, fog, and clouds make for a great scene,
+but we felt like we needed a background! To implement this, we used openGL’s
+Cube Map Texture and added two 6-sided images that would “fold together”
+and make for an all-encompassing skybox. The texture is placed onto the
+interior of a cube, and the texture is accessed through helper methods
+in skyboxhelper.h and painted through the skybox.vert/frag shader files.
+If we had a chance to implement this differently, we would have made it mesh
+better with other elements of the project. To avoid steep cutoffs on the fog effects
+and because of a limited terrain size, the skybox had be made “foggy” which
+severely diminished the effect it had. Though, it felt really nice to make such
+a cool feature work.
 
-- (1) Framebuffer is used in a very similar way as used in Lab 11
-where I paint my initial render to the color buffer attachment
-and then paint onto the screen through an "fbo_shader" program
-that I created that applies the post-processing effects.
+Cloud Effects:
+To render volumetric clouds, we render a series of evenly-spaced, view-aligned
+planes, from back to front. Each plane generates a set of fragments, which are shaded
+according to a 3D texture generated at the start of the program.
 
-- My post-processing effects chosen were
-   - invert colors
-   - sharpening
+Currently, the clouds are all shaded with a constant light gray. In the future,
+we would like to improve the lighting using the gradient and a first-pass for lighting,
+as well as optimize the cloud generation to work in increments.
 
-Known Bugs:
-- Since I was facing the same issues with the viewport
-from lab 11, I added the line:
-QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Floor);
+Resources Used:
+Fog Effects:
+https://blog.demofox.org/2014/06/22/analytic-fog-density/
+https://computergraphics.stackexchange.com/questions/227/how-are-volumetric-effects-handled-in-raytracing
+https://cs.dartmouth.edu/wjarosz/publications/novak18monte-sig.html
 
-to my main() function to fix the issue. As a result, my starting window
-is now a bit smaller than normal, but resizing the screen is
-completely functional, so it isn't too much of an issue.
-
-Extra Credit: None
-
-# Project 5 README
-Design Choices:
-- Major: no more than 4 VBO-VAO pairs are ever created.
--> updateVBO() in realtime.cpp checks through renderdata.shapes to
-   which shapes are there and only allocates a buffer if it's
-   the first instance of that shape-primitive appearing.
-   Ex. in a scene of 15 cubes, only 1 VBO for the unit cube is made
-   and reused. In a scene with 2 cones and 3 spheres, only 2 VBOs for the unit cone and
-   unit sphere.
-   To accomplish this, I used a shapesCheck vector<int> that determines different
-   actions in updateVBO() to take depending on whether a new shape or another
-   of an already seen shape comes through.
-
-- shapes or RenderDataShapes have new fields for their n_ctm (to transform normals),
-  for the handle to their VAO and VBO handles, and for a vector of all their vertex
-  points, which is used in the paintGL() loop later.
-
-- NOTE: I was intending to place all of the shapes to be subchildren of a superclass,
-but I ran out of time to implement the switch from what I had. Instead, with the time I had, I created
-a shapesFunc() class that holds (2) often used methods that I factored out of the 
-shapes classes. I recognize that having a superclass would be adding new primitives easier.
-
-Known Bugs: None that I know of.
-
-Extra Credit: none
+Cloud effects:
+https://developer.nvidia.com/gpugems/gpugems/part-vi-beyond-triangles/chapter-39-volume-rendering-techniques
+http://killzone.dl.playstation.net/killzone/horizonzerodawn/presentations/Siggraph15_Schneider_Real-Time_Volumetric_Cloudscapes_of_Horizon_Zero_Dawn.pdf
+Skybox Effects:
+https://learnopengl.com/Advanced-OpenGL/Cubemaps
