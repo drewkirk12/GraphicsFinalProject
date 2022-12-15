@@ -377,9 +377,9 @@ void Realtime::settingsChanged() {
     if (glIni) {
         SkyBox::loadSkyBoxImage(&m_skybox_texture, settings.m_skybox_type);
     }
-    camera.cameraUpdate(renderData, size().width(), size().height());
-    m_view = camera.getViewMatrix();
-    m_proj = camera.getPerspectiveMatrix();
+//    camera.cameraUpdate(renderData, size().width(), size().height());
+//    m_view = camera.getViewMatrix();
+//    m_proj = camera.getPerspectiveMatrix();
     m_invert_bool = settings.perPixelFilter;
     m_kernel_bool = settings.kernelBasedFilter;
     updateVBO();
